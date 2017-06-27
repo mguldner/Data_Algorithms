@@ -1,6 +1,6 @@
 package machinelearning.decisiontree;
 
-import general.exception.UnallowedValueException;
+import machinelearning.general.exception.UnallowedValueException;
 
 /*
  * T : Le type de la reponse pour la caracteristique concernee.

@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import machinelearning.decisiontree.data.Leaf;
-import decisiontree.data.Node;
-import decisiontree.data.Tree;
-import general.Algorithm;
-import general.DataObject;
+import machinelearning.decisiontree.data.Node;
+import machinelearning.decisiontree.data.Tree;
+import machinelearning.general.Algorithm;
+import machinelearning.general.DataObject;
 
 /*
  * ? :  Le type de chacune des Features -> on ne le connait pas d'avance ! 
