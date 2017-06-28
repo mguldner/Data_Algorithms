@@ -1,14 +1,15 @@
 package machinelearning.decisiontree;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import machinelearning.decisiontree.data.Tree;
+import machinelearning.decisiontree.data.Leaf2;
+import machinelearning.decisiontree.data.Node2;
+import machinelearning.decisiontree.data.Tree2;
 import machinelearning.general.DataObject2;
 
 /**

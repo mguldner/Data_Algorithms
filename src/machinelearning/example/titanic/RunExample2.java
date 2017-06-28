@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RunExample {
+import machinelearning.decisiontree.DecisionTreeAlgorithm2;
+
+public class RunExample2 {
 
   public static void main(String[] args) throws FileNotFoundException, IOException {
     ArrayList<Passenger2> trainingSet = new ArrayList<Passenger2>();
@@ -79,5 +81,7 @@ public class RunExample {
     for(Passenger2 p : testSet){
       p.setAnswerValue(algorithm.test(algorithm.getTrainedTree(), p));
     }
+    
+    
   }
 }

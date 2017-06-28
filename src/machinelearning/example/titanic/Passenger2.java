@@ -1,4 +1,8 @@
-public class Passenger2 implements DataObject<Boolean>{
+package machinelearning.example.titanic;
+
+import machinelearning.general.DataObject2;
+
+public class Passenger2 implements DataObject2<Boolean>{
 
   private Integer passengerId;
   private Integer pClass;

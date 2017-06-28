@@ -1,7 +1,9 @@
 package machinelearning.example.titanic;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +17,7 @@ import machinelearning.general.LossFunction;
 
 public class RunExample {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
         ArrayList<Passenger> trainingSet = new ArrayList<Passenger>();
         HashMap<Integer, Boolean> trainingSetSurvivor = new HashMap<Integer, Boolean>();
         
@@ -127,8 +129,8 @@ public class RunExample {
             p.setLabel(decisionTreeAlgorithm.test(treeTrained, p));
         }
         
-        LossFunction lossFunction = new LossFunction();
-        reality = ;
-        lossFunction.getError(reality, prediction);
+//        LossFunction lossFunction = new LossFunction();
+//        reality = ;
+//        lossFunction.getError(reality, prediction);
     }
 }
