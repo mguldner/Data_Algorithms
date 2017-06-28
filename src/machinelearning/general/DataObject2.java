@@ -10,4 +10,5 @@ public interface DataObject2<T> {
 
     Object getValueForFeature(String feature);
     T getAnswerValue();
+    void setAnswerValue(T value);
 }
