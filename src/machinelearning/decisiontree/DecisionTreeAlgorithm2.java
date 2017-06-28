@@ -66,13 +66,17 @@ public class DecisionTreeAlgorithm2<T, U extends DataObject2<T>> {
     }
     
     public T mostFrequentAnswerJava8(List<U> data){
-        return data.stream()
-                .map(U::getAnswerValue)
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet()
-                .stream()
-                .max(Map.Entry.comparingByValue())
-                .get()
-                .getKey();
+        Map<T, Long> classification = data.stream()
+            .map(U::getAnswerValue)
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        Entry<T, Long> bestAnswer = classification
+            .entrySet()
+            .stream()
+            .max(Map.Entry.comparingByValue())
+            .get();
+        if((double)bestAnswer.getValue() > (double)data.size() * trustProbability)
+            return bestAnswer.getKey();
+        else
+            return null;
     }
 }
