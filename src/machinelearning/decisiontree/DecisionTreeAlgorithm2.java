@@ -33,50 +33,73 @@ public class DecisionTreeAlgorithm2<T, U extends DataObject2<T>> {
         return this.trustProbability;
     }
 
-
-
-    public Tree<Answer2<T>> train(List<U> data, List<String> remainingFeatures){
-        T guess = mostFrequentAnswerJava8(data);
-        return null;
-    }
-
-    public T mostFrequentAnswer(List<U> data){
-        HashMap<T, MutableInt> numberOfAnswers = new HashMap<T, MutableInt>();
-        T winningAnswer = data.get(0).getAnswerValue();
-        int maxScore = 1;
-        for(U element: data){
-            T tmpAnswer = element.getAnswerValue();
-            MutableInt count = numberOfAnswers.get(tmpAnswer);
-            if(count == null){
-                numberOfAnswers.put(tmpAnswer, new MutableInt());
-            } else {
-                count.increment();
-                int tmpScore = count.getValue();
-                if(tmpScore > maxScore){
-                    maxScore = tmpScore;
-                    winningAnswer = tmpAnswer;
-                }
-            }
+    public Tree2<T> train(List<U> data, List<String> remainingFeatures){
+    Entry<T, Long> guess = mostFrequentAnswerJava8(data);
+    if((double)guess.getValue() > (double)data.size() * trustProbability 
+        || remainingFeatures.isEmpty())
+      return new Leaf2<>(guess.getKey());
+    else{
+      Map<Object, List<U>> finalSubsets = new HashMap<>();
+      int finalScore = -1;
+      String finalFeature="";
+      for(String feature : remainingFeatures){
+        Map<Object, List<U>> subsets = new HashMap<>();
+        List<Object> featureValues = valuesOf(feature, data);
+        int score = 0;
+        for(Object featureValue : featureValues){
+          List<U> subset = data
+              .stream()
+              .filter(e -> e.getValueForFeature(feature).equals(featureValue))
+              .collect(Collectors.toList());
+          subsets.put(featureValue, subset);
+          score += mostFrequentAnswerJava8(subset)
+              .getValue()
+              .intValue();
         }
-        int numberOfElements = data.size();
-        if(maxScore > numberOfElements * trustProbability)
-            return winningAnswer;
-        else
-            return null;
+        if(score > finalScore){
+          finalScore = score;
+          finalSubsets = subsets;
+          finalFeature = feature;
+        }
+      }
+      remainingFeatures.remove(finalFeature);
+      Map<Object,Tree2<T>> children = new HashMap<>();
+      for(Entry<Object, List<U>> entry : finalSubsets.entrySet()){
+        children.put(entry.getKey(), train(entry.getValue(), remainingFeatures));
+      }
+      return new Node2<>(finalFeature, children);
     }
-    
-    public T mostFrequentAnswerJava8(List<U> data){
-        Map<T, Long> classification = data.stream()
-            .map(U::getAnswerValue)
-            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-        Entry<T, Long> bestAnswer = classification
-            .entrySet()
-            .stream()
-            .max(Map.Entry.comparingByValue())
-            .get();
-        if((double)bestAnswer.getValue() > (double)data.size() * trustProbability)
-            return bestAnswer.getKey();
-        else
-            return null;
+  }
+  
+  public T test(Tree2<T> tree, U testPoint){
+    if(tree instanceof Leaf2)
+      return ((Leaf2<T>)tree).getValue();
+    else if(tree instanceof Node2){
+      Node2<T> treeAsNode = (Node2<T>)tree;
+      Object featureValue = testPoint.getValueForFeature(treeAsNode.getFeature());
+      return test(treeAsNode.getChild(featureValue), testPoint);
     }
+    else
+      return null;
+  }
+
+  public List<Object> valuesOf(String feature, List<U> data){
+    return data
+        .stream()
+        .map(e -> e.getValueForFeature(feature))
+        .distinct()
+        .collect(Collectors.toList());
+  }
+
+  public Entry<T, Long> mostFrequentAnswerJava8(List<U> data){
+    Map<T, Long> classification = data.stream()
+        .map(U::getAnswerValue)
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    Entry<T, Long> bestAnswer = classification
+        .entrySet()
+        .stream()
+        .max(Map.Entry.comparingByValue())
+        .get();
+    return bestAnswer;
+  }
 }
