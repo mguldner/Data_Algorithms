@@ -73,7 +73,7 @@ public class RunExample {
     features.add("cabin");
     features.add("embarked");
     
-    DecisionTreeAlgorithm2<Boolean, Passenger2> algorithm = new DecisionTreeAlgorithm2<Boolean, Passenger2>(0.8);
+    DecisionTreeAlgorithm2<Boolean, Passenger2> algorithm = new DecisionTreeAlgorithm2<>(0.8);
     algorithm.train(trainingSet, features);
     
     for(Passenger2 p : testSet){
