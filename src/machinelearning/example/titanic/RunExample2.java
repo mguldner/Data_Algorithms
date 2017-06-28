@@ -10,7 +10,7 @@ import java.util.List;
 public class RunExample {
 
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    ArrayList<Passenger> trainingSet = new ArrayList<Passenger>();
+    ArrayList<Passenger2> trainingSet = new ArrayList<Passenger2>();
 
     String trainingFile = "";
     try(BufferedReader br = new BufferedReader(new FileReader(trainingFile))){
@@ -19,7 +19,7 @@ public class RunExample {
         String[] values = line.split(";");
         if("".equals(values[4]))
           values[4] = "-1";
-        Passenger tmpPassenger = new Passenger(
+        Passenger2 tmpPassenger = new Passenger2(
             Integer.parseInt(values[0]),
             Integer.parseInt(values[2]),
             "M".equals(values[3]),
@@ -37,7 +37,7 @@ public class RunExample {
       e.printStackTrace();
     }
 
-    ArrayList<Passenger> testSet = new ArrayList<>();
+    ArrayList<Passenger2> testSet = new ArrayList<>();
     String testFile = "";
     try(BufferedReader br = new BufferedReader(new FileReader(testFile))){
       String line;
@@ -45,7 +45,7 @@ public class RunExample {
         String[] values = line.split(";");
         if("".equals(values[4]))
           values[4] = "-1";
-        testSet.add(new Passenger(
+        testSet.add(new Passenger2(
             Integer.parseInt(values[0]),
             Integer.parseInt(values[2]),
             "M".equals(values[3]),
@@ -73,10 +73,10 @@ public class RunExample {
     features.add("cabin");
     features.add("embarked");
     
-    DecisionTreeAlgorithm2<Boolean, Passenger> algorithm = new DecisionTreeAlgorithm2<Boolean, Passenger>(0.8);
+    DecisionTreeAlgorithm2<Boolean, Passenger2> algorithm = new DecisionTreeAlgorithm2<Boolean, Passenger2>(0.8);
     algorithm.train(trainingSet, features);
     
-    for(Passenger p : testSet){
+    for(Passenger2 p : testSet){
       p.setAnswerValue(algorithm.test(algorithm.getTrainedTree(), p));
     }
   }
