@@ -2,6 +2,8 @@ package machinelearning.general;
 
 import java.util.List;
 
+import machinelearning.general.exception.MissingValueException;
+
 public class SquareLossFunction<T> implements LossFunction<T> {
 
   @Override

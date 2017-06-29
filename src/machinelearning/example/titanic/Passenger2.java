@@ -7,17 +7,18 @@ public class Passenger2 implements DataObject2<Boolean>{
   private Integer passengerId;
   private Integer pClass;
   private Boolean isMale;
-  private Integer age;
+  private Double age;
   private Integer sibSpNb;
   private Integer parChNb;
   private String ticket;
   private Double fare;
-  private String cabin;
+  // Not useful
+  //private String cabin;
   private String embarked;
   private Boolean survived;
 
-  public Passenger2(int passengerId, int pClass, boolean isMale, int age,
-      int sibSpNb, int parChNb, String ticket, double fare, String cabin, String embarked) {
+  public Passenger2(int passengerId, int pClass, boolean isMale, double age,
+      int sibSpNb, int parChNb, String ticket, double fare, String embarked) {
     super();
     this.passengerId = passengerId;
     this.pClass = pClass;
@@ -27,7 +28,6 @@ public class Passenger2 implements DataObject2<Boolean>{
     this.parChNb = parChNb;
     this.ticket = ticket;
     this.fare = fare;
-    this.cabin = cabin;
     this.embarked = embarked;
   }
 
@@ -43,7 +43,7 @@ public class Passenger2 implements DataObject2<Boolean>{
     return isMale;
   }
 
-  public int getAge() {
+  public double getAge() {
     return age;
   }
 
@@ -61,10 +61,6 @@ public class Passenger2 implements DataObject2<Boolean>{
 
   public double getFare() {
     return fare;
-  }
-
-  public String getCabin() {
-    return cabin;
   }
 
   public String getEmbarked() {
@@ -90,8 +86,6 @@ public class Passenger2 implements DataObject2<Boolean>{
       return ticket;
     case "fare":
       return fare;
-    case "cabin":
-      return cabin;
     case "embarked":
       return embarked;
     default:
