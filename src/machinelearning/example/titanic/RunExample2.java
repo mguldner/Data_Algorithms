@@ -82,6 +82,14 @@ public class RunExample2 {
       p.setAnswerValue(algorithm.test(trainedTree, p));
     }
     
-    
+    LossFunction<Boolean> lossFunction = new SquareLossFunction<>();
+    List<Boolean> reality = null;
+    List<Boolean> prediction = testSet.stream().map(Passenger2::getAnswerValue).collect(Collectors.toList());
+    try {
+      double accuracy = lossFunction.getAccuracy(reality, prediction);
+      System.out.println("Accuracy : " + accuracy);
+    } catch (MissingValueException e) {
+      e.printStackTrace();
+    }
   }
 }
