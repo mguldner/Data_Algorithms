@@ -76,10 +76,10 @@ public class RunExample2 {
     features.add("embarked");
     
     DecisionTreeAlgorithm2<Boolean, Passenger2> algorithm = new DecisionTreeAlgorithm2<>(0.8);
-    algorithm.train(trainingSet, features);
+    Tree2<Boolean> trainedTree = algorithm.train(trainingSet, features);
     
     for(Passenger2 p : testSet){
-      p.setAnswerValue(algorithm.test(algorithm.getTrainedTree(), p));
+      p.setAnswerValue(algorithm.test(trainedTree, p));
     }
     
     
