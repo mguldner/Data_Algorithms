@@ -7,7 +7,7 @@ public class Passenger2 implements DataObject2<Boolean>{
   private Integer passengerId;
   private Integer pClass;
   private Boolean isMale;
-  private Double age;
+  private Frame age;
   private Integer sibSpNb;
   private Integer parChNb;
   private String ticket;
@@ -17,7 +17,7 @@ public class Passenger2 implements DataObject2<Boolean>{
   private String embarked;
   private Boolean survived;
 
-  public Passenger2(int passengerId, int pClass, boolean isMale, double age,
+  public Passenger2(int passengerId, int pClass, boolean isMale, Frame age,
       int sibSpNb, int parChNb, String ticket, double fare, String embarked) {
     super();
     this.passengerId = passengerId;
@@ -43,7 +43,7 @@ public class Passenger2 implements DataObject2<Boolean>{
     return isMale;
   }
 
-  public double getAge() {
+  public Frame getAge() {
     return age;
   }
 
