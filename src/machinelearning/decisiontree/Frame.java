@@ -18,7 +18,11 @@ public class Frame {
     return max;
   }
 
-  public boolean equals(Frame frame) {
-    return this.min==frame.getMin() && this.max == frame.getMax();
+  @Override
+  public boolean equals(Object frame) {
+    if(frame == null || !(frame instanceof Frame))
+      return false;
+    else
+      return this.min==((Frame)frame).getMin() && this.max == ((Frame)frame).getMax();
   }
 }
