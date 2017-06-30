@@ -25,4 +25,9 @@ public class Frame {
     else
       return this.min==((Frame)frame).getMin() && this.max == ((Frame)frame).getMax();
   }
+  
+  @Override
+  public int hashCode() {
+    return this.min + this.max;
+  }
 }
