@@ -40,7 +40,7 @@ public class RunExample2 {
                             Integer.parseInt(values[0]),
                             Integer.parseInt(values[2]),
                             "male".equals(values[3]),
-                            Double.parseDouble(values[4]),
+                            getFrame(Double.parseDouble(values[4])),
                             Integer.parseInt(values[5]),
                             Integer.parseInt(values[6]),
                             values[7],
@@ -70,7 +70,7 @@ public class RunExample2 {
                             Integer.parseInt(values[0]),
                             Integer.parseInt(values[1]),
                             "male".equals(values[2]),
-                            Double.parseDouble(values[3]),
+                            getFrame(Double.parseDouble(values[3])),
                             Integer.parseInt(values[4]),
                             Integer.parseInt(values[5]),
                             values[6],
@@ -132,7 +132,7 @@ public class RunExample2 {
         }
     }
     
-    public static Frame getFrame(int age){
+    public static Frame getFrame(double age){
     if(0 <= age){
       if(age <= 10)
         return new Frame(0,10);
