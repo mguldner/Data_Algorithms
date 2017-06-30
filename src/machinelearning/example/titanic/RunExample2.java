@@ -131,4 +131,23 @@ public class RunExample2 {
             e.printStackTrace();
         }
     }
+    
+    public static Frame getFrame(int age){
+    if(0 <= age){
+      if(age <= 10)
+        return new Frame(0,10);
+      else if(age <= 20)
+        return new Frame(11,20);
+      else if(age <= 35)
+        return new Frame(21,35);
+      else if(age <= 60)
+        return new Frame(36,60);
+      else if(age <= 90)
+        return new Frame(61,90);
+      else
+        return new Frame(91,150);
+    }
+    else
+      return null;
+  }
 }
