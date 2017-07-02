@@ -1,5 +1,6 @@
 # Algorithms
-List of self-coded algorithms for further use. I used the free book about Machine Learning of Hal Daumé III. See website http://ciml.info/
+List of self-coded algorithms for further use. I used the free book about Machine Learning of Hal Daumé III. See website http://ciml.info/.
+
 The free book is on the root of this project.
 
 ## Graph Theory
