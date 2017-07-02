@@ -1,5 +1,6 @@
 # Algorithms
-List of self-coded algorithms for further use
+List of self-coded algorithms for further use. I used the free book about Machine Learning of Hal Daumé III. See website http://ciml.info/
+The free book is on the root of this project.
 
 ## Graph Theory
 These algorithms are not ready-to-use. There must be as structure behind.
@@ -12,11 +13,11 @@ For now, only one example hic, I think, will further be used to test the differe
 
 #### In-development algorithm
 
-* Decision tree
+[In progress]
 
 #### Working Algorithm
 
-[No one for now]
+* Decision Tree
 
 ### Example
 
