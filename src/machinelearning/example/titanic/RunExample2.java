@@ -22,7 +22,7 @@ public class RunExample2 {
     final static String testFile = folder + "/test.csv";
     final static String testAnswersFile = folder + "/gender_submission.csv";
 
-    public static void main(String[] args) throws FileNotFoundException, IOException {
+    public double runAlgorithm(double trustProbability) throws FileNotFoundException, IOException {
         ArrayList<Passenger2> trainingSet = new ArrayList<Passenger2>();
 
         try(BufferedReader br = new BufferedReader(new FileReader(trainingFile))){
@@ -91,7 +91,7 @@ public class RunExample2 {
         features.add("fare");
         features.add("embarked");
 
-        DecisionTreeAlgorithm2<Boolean, Passenger2> algorithm = new DecisionTreeAlgorithm2<>(0.8);
+        DecisionTreeAlgorithm2<Boolean, Passenger2> algorithm = new DecisionTreeAlgorithm2<>(trustProbability);
         //        System.out.println("pass : ");
         //        for(Passenger2 p : trainingSet)
         //            System.out.println(p.getEmbarked());
@@ -100,10 +100,9 @@ public class RunExample2 {
         //        }
         Tree2<Boolean> trainedTree = algorithm.train(trainingSet, features);
 
-        System.out.println("Trained Tree : \n " + trainedTree.toPrintableTree());
+//        System.out.println("Trained Tree : \n " + trainedTree.toPrintableTree());
         for(Passenger2 p : testSet){
             p.setAnswerValue(algorithm.test(trainedTree, p));
-            System.out.println(p.getAnswerValue());
         }
 
         LossFunction<Boolean> lossFunction = new SquareLossFunction<>();
@@ -123,15 +122,17 @@ public class RunExample2 {
             e.printStackTrace();
         }
         List<Boolean> prediction = testSet.stream().map(Passenger2::getAnswerValue).collect(Collectors.toList());
+        double accuracy = -1;
         try {
-            double accuracy = lossFunction.getAccuracy(reality, prediction);
-            System.out.println("Accuracy : " + accuracy);
+            accuracy = lossFunction.getAccuracy(reality, prediction);
+//            System.out.println("Accuracy : " + accuracy);
         } catch (MissingValueException e) {
             e.printStackTrace();
         }
+        return accuracy;
     }
 
-    public static Frame getAgeFrame(double age){
+    public Frame getAgeFrame(double age){
         if(0 <= age){
             if(age <= 10)
                 return new Frame(0,10);
@@ -150,7 +151,7 @@ public class RunExample2 {
             return new Frame(-1, -1);
     }
     
-    public static Frame getFareFrame(double fare){
+    public Frame getFareFrame(double fare){
         if(fare <= 10)
             return new Frame(0,10);
         else if(fare <= 20)
@@ -174,6 +175,17 @@ public class RunExample2 {
         else{
             System.err.println("[INFO:RunExample2] Missing Frame for fare.");
             return null;
+        }
+    }
+    
+    public static void main(String[] args) {
+        for(double tP = 0.8; tP < 1; tP += 0.01){
+            RunExample2 runExample = new RunExample2();
+            try {
+                System.out.println(tP + ";" + runExample.runAlgorithm(tP));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

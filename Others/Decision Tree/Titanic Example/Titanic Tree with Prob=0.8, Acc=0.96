@@ -1,0 +1,36 @@
+<isMale : 	false=
+			<sibSpNb : 	0=
+						<parChNb : 	0=
+									<pClass : 	1=true, 
+												2=true, 
+												3=
+												<age : 	36 <= x <= 60=false, 
+														-1 <= x <= -1=
+																		<embarked : Q=true, 
+																					C=true, 
+																					S=false
+																		>, 
+														61 <= x <= 90=true, 
+														21 <= x <= 35=
+																		<fare : 0 <= x <= 10=true, 
+																				11 <= x <= 20=false
+																		>, 
+														0 <= x <= 10=true, 
+														11 <= x <= 20=true
+												>
+									>, 
+									1=true, 
+									2=true, 
+									3=true, 
+									4=false, 
+									5=false
+						>, 
+						1=true, 
+						2=true, 
+						3=false, 
+						4=false, 
+						5=false, 
+						8=false
+			>, 
+			true=false
+>

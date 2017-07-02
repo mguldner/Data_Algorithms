@@ -36,7 +36,7 @@ public class Node2<T> implements Tree2<T> {
     public String toPrintableTree() {
         String str = "<" + this.getFeature() + " : ";
         for(Map.Entry<Object, Tree2<T>> entry : this.children.entrySet()){
-            str += entry.getValue().toPrintableTree() + ", ";
+            str += entry.getKey() + "=" + entry.getValue().toPrintableTree() + ", ";
         }
         return str.substring(0, str.length()-2) + ">";
     }
