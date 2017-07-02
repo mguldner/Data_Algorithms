@@ -95,7 +95,7 @@ public class DecisionTreeAlgorithm2<T, U extends DataObject2<T>> {
     public Entry<T, Long> mostFrequentAnswerJava8(List<U> data){
         //System.out.println("data : "); 
 //        for(U e : data)
-//            System.out.println(e.toString());
+//            System.out.println(e.getAnswerValue().toString());
         Map<T, Long> classification = data.stream()
                 .map(U::getAnswerValue)
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));

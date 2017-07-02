@@ -1,28 +1,38 @@
 package machinelearning.decisiontree.features;
 
-
 public class Frame {
 
-    // Frame : min <= 
-    private double min;
-    // frame : < max
-    private double max;
-    
-    public Frame(double min, double max) {
-        this.min = min;
-        this.max = max;
-    }
+  private int min;
+  private int max;
 
-    public double getMin() {
-        return min;
-    }
+  public Frame(int min, int max){
+    this.min = min;
+    this.max = max;
+  }
+  
+  public int getMin() {
+    return min;
+  }
 
-    public double getMax() {
-        return max;
-    }
-    
-    @Override
-    public String toString(){
-        return min + " <= x < " + max;
+  public int getMax() {
+    return max;
+  }
+
+  @Override
+  public boolean equals(Object frame) {
+    if(frame == null || !(frame instanceof Frame))
+      return false;
+    else
+      return this.min==((Frame)frame).getMin() && this.max == ((Frame)frame).getMax();
+  }
+  
+  @Override
+  public int hashCode() {
+    return this.min + this.max;
+  }
+  
+  @Override
+    public String toString() {
+        return this.min + " <= x <= " + this.max;
     }
 }

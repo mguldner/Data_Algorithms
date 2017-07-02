@@ -1,5 +1,6 @@
 package machinelearning.example.titanic;
 
+import machinelearning.decisiontree.features.Frame;
 import machinelearning.general.DataObject2;
 
 public class Passenger2 implements DataObject2<Boolean>{
@@ -10,15 +11,14 @@ public class Passenger2 implements DataObject2<Boolean>{
   private Frame age;
   private Integer sibSpNb;
   private Integer parChNb;
-  private String ticket;
-  private Double fare;
+  private Frame fare;
   // Not useful
   //private String cabin;
   private String embarked;
   private Boolean survived;
 
   public Passenger2(int passengerId, int pClass, boolean isMale, Frame age,
-      int sibSpNb, int parChNb, String ticket, double fare, String embarked) {
+      int sibSpNb, int parChNb, Frame fare, String embarked) {
     super();
     this.passengerId = passengerId;
     this.pClass = pClass;
@@ -26,7 +26,6 @@ public class Passenger2 implements DataObject2<Boolean>{
     this.age = age;
     this.sibSpNb = sibSpNb;
     this.parChNb = parChNb;
-    this.ticket = ticket;
     this.fare = fare;
     this.embarked = embarked;
   }
@@ -55,11 +54,7 @@ public class Passenger2 implements DataObject2<Boolean>{
     return parChNb;
   }
 
-  public String getTicket() {
-    return ticket;
-  }
-
-  public double getFare() {
+  public Frame getFare() {
     return fare;
   }
 
@@ -70,9 +65,7 @@ public class Passenger2 implements DataObject2<Boolean>{
   @Override
   public Object getValueForFeature(String feature) {
     switch(feature){
-    case "passengerId":
-      return this.passengerId;
-    case "class":
+    case "pClass":
       return pClass;
     case "isMale":
       return isMale;
@@ -82,14 +75,12 @@ public class Passenger2 implements DataObject2<Boolean>{
       return sibSpNb;
     case "parChNb":
       return parChNb;
-    case "ticket":
-      return ticket;
     case "fare":
       return fare;
     case "embarked":
       return embarked;
     default:
-      System.err.println("No value for feature " + feature);
+      System.err.println("[ERROR:Passenger2] No value for feature " + feature);
       return null;
     }
   }
@@ -101,6 +92,6 @@ public class Passenger2 implements DataObject2<Boolean>{
 
   @Override
   public void setAnswerValue(Boolean value) {
-    this.survived = true;
+    this.survived = value;
   }
 }
