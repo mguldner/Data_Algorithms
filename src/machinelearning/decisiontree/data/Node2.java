@@ -6,10 +6,12 @@ public class Node2<T> implements Tree2<T> {
 
     private Map<Object,Tree2<T>> children;
     private String feature;
+    private T value;
 
-    public Node2(String feature, Map<Object,Tree2<T>> children) {
+    public Node2(String feature, Map<Object,Tree2<T>> children, T value) {
         this.feature = feature;
         this.children = children;
+        this.value = value;
     }
 
     public Map<Object,Tree2<T>> getChildren(){
@@ -30,6 +32,14 @@ public class Node2<T> implements Tree2<T> {
 
     public void setFeature(String feature) {
         this.feature = feature;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
     }
 
     @Override

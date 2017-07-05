@@ -33,8 +33,16 @@ public class RunExample2 {
                     firstLine = false;
                 }
                 else{
-                    //System.out.println(line);
+//                    System.out.println(line);
                     String[] values = line.split(",");
+//                    System.out.println(values[0]);
+//                    System.out.println(values[2]);
+//                    System.out.println(values[3]);
+//                    System.out.println(values[4]);
+//                    System.out.println(values[5]);
+//                    System.out.println(values[6]);
+//                    System.out.println(values[8]);
+//                    System.out.println(values[10]);
                     if("".equals(values[4]))
                         values[4] = "-1";
                     Passenger2 tmpPassenger = new Passenger2(
@@ -44,8 +52,8 @@ public class RunExample2 {
                             getAgeFrame(Double.parseDouble(values[4])),
                             Integer.parseInt(values[5]),
                             Integer.parseInt(values[6]),
-                            getFareFrame(Double.parseDouble(values[7])),
-                            values[9]);
+                            getFareFrame(Double.parseDouble(values[8])),
+                            values[10]);
                     tmpPassenger.setAnswerValue(Integer.parseInt(values[1]) == 1);
                     trainingSet.add(tmpPassenger);
                 }
@@ -73,8 +81,8 @@ public class RunExample2 {
                             getAgeFrame(Double.parseDouble(values[3])),
                             Integer.parseInt(values[4]),
                             Integer.parseInt(values[5]),
-                            getFareFrame(Double.parseDouble(values[6])),
-                            values[8]);
+                            getFareFrame(Double.parseDouble(values[7])),
+                            values[9]);
                     testSet.add(tmpPassenger);
                 }
             }
@@ -103,6 +111,7 @@ public class RunExample2 {
 //        System.out.println("Trained Tree : \n " + trainedTree.toPrintableTree());
         for(Passenger2 p : testSet){
             p.setAnswerValue(algorithm.test(trainedTree, p));
+            System.out.println(p.getPassengerId()+","+(p.getAnswerValue()==true?1:0));
         }
 
         LossFunction<Boolean> lossFunction = new SquareLossFunction<>();
@@ -134,44 +143,44 @@ public class RunExample2 {
 
     public Frame getAgeFrame(double age){
         if(0 <= age){
-            if(age <= 10)
-                return new Frame(0,10);
-            else if(age <= 20)
-                return new Frame(11,20);
-            else if(age <= 35)
-                return new Frame(21,35);
-            else if(age <= 60)
-                return new Frame(36,60);
-            else if(age <= 90)
-                return new Frame(61,90);
+            if(age <= 16)
+                return new Frame(0,16);
+            else if(age <= 21)
+                return new Frame(17,21);
+            else if(age <= 25)
+                return new Frame(22,25);
+            else if(age <= 31)
+                return new Frame(26,31);
+            else if(age <= 37)
+                return new Frame(32,37);
+            else if(age <= 46)
+                return new Frame(38,46);
             else
-                return new Frame(91,150);
+                return new Frame(47,100);
         }
         else
             return new Frame(-1, -1);
     }
     
     public Frame getFareFrame(double fare){
-        if(fare <= 10)
-            return new Frame(0,10);
-        else if(fare <= 20)
-            return new Frame(11,20);
-        else if(fare <= 50)
-            return new Frame(21,50);
-        else if(fare <= 100)
-            return new Frame(51,100);
-        else if(fare <= 150)
-            return new Frame(101,150);
-        else if(fare <= 200)
-            return new Frame(151,200);
-        else if(fare <= 300)
-            return new Frame(201,300);
-        else if(fare <= 400)
-            return new Frame(301,400);
-        else if(fare <= 500)
-            return new Frame(401,20);
+        if(fare <= 7.73)
+            return new Frame(0,7.73);
+        else if(fare <= 7.889)
+            return new Frame(7.74,7.889);
+        else if(fare <= 8.655)
+            return new Frame(7.89,8.655);
+        else if(fare <= 12.9)
+            return new Frame(8.66,12.9);
+        else if(fare <= 16.2)
+            return new Frame(13,16.2);
+        else if(fare <= 26.1)
+            return new Frame(16.3,26.1);
+        else if(fare <= 34.7)
+            return new Frame(26.2,34.7);
+        else if(fare <= 8.72)
+            return new Frame(34.8,72);
         else if(fare <= 1000)
-            return new Frame(501,1000);
+            return new Frame(72.1,1000);
         else{
             System.err.println("[INFO:RunExample2] Missing Frame for fare.");
             return null;
@@ -179,13 +188,19 @@ public class RunExample2 {
     }
     
     public static void main(String[] args) {
-        for(double tP = 0.8; tP < 1; tP += 0.01){
+        /*for(double tP = 0.8; tP < 1; tP += 0.01){
             RunExample2 runExample = new RunExample2();
             try {
                 System.out.println(tP + ";" + runExample.runAlgorithm(tP));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }*/
+        RunExample2 runExample = new RunExample2();
+        try{
+            System.out.println("\n\nAccuracy : " + runExample.runAlgorithm(0.95));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

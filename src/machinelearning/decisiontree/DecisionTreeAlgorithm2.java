@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import machinelearning.decisiontree.data.Leaf2;
 import machinelearning.decisiontree.data.Node2;
 import machinelearning.decisiontree.data.Tree2;
+import machinelearning.example.titanic.Passenger2;
 import machinelearning.general.DataObject2;
 
 /**
@@ -68,7 +69,7 @@ public class DecisionTreeAlgorithm2<T, U extends DataObject2<T>> {
             for(Entry<Object, List<U>> entry : finalSubsets.entrySet()){
                 children.put(entry.getKey(), train(entry.getValue(), remainingFeatures));
             }
-            return new Node2<>(finalFeature, children);
+            return new Node2<>(finalFeature, children, guess.getKey());
         }
     }
 
@@ -78,10 +79,15 @@ public class DecisionTreeAlgorithm2<T, U extends DataObject2<T>> {
         else if(tree instanceof Node2){
             Node2<T> treeAsNode = (Node2<T>)tree;
             Object featureValue = testPoint.getValueForFeature(treeAsNode.getFeature());
-            return test(treeAsNode.getChild(featureValue), testPoint);
+            Tree2<T> childForFeature = treeAsNode.getChild(featureValue);
+            if(childForFeature == null)
+                return treeAsNode.getValue();
+            else
+                return test(childForFeature, testPoint);
         }
-        else
+        else{
             return null;
+        }
     }
 
     public List<Object> valuesOf(String feature, List<U> data){

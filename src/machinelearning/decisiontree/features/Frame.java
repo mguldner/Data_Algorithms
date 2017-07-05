@@ -2,19 +2,19 @@ package machinelearning.decisiontree.features;
 
 public class Frame {
 
-  private int min;
-  private int max;
+  private double min;
+  private double max;
 
-  public Frame(int min, int max){
+  public Frame(double min, double max){
     this.min = min;
     this.max = max;
   }
   
-  public int getMin() {
+  public double getMin() {
     return min;
   }
 
-  public int getMax() {
+  public double getMax() {
     return max;
   }
 
@@ -28,7 +28,7 @@ public class Frame {
   
   @Override
   public int hashCode() {
-    return this.min + this.max;
+    return (int)(this.min + this.max);
   }
   
   @Override
