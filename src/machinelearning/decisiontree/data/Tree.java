@@ -1,28 +1,20 @@
 package machinelearning.decisiontree.data;
 
 public abstract class Tree<T> {
-
-    private Tree<T> parent;
-    private T value;
     
-    public Tree(T value, Tree<T> parent){
-        this.value = value;
-        this.parent = parent;
-    }
+    protected T value;
     
     public Tree(T value){
         this.value = value;
     }
     
-    public Tree<T> getParent(){
-        return this.parent;
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
     }
     
-    public void setParent(Tree<T> parent){
-        this.parent = parent;
-    }
-    
-    public T getValue(){
-        return this.value;
-    }
+    public abstract String toPrintableTree();
 }

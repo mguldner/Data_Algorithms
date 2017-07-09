@@ -1,4 +1,4 @@
-package machinelearning.general;
+package machinelearning.general.lossfunction;
 
 import java.util.List;
 

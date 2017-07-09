@@ -1,18 +1,14 @@
 package machinelearning.general;
 
-import java.util.List;
-
-import machinelearning.decisiontree.Feature;
-
 /**
- * @param <U> : Le type de la valeur finale (la donnee que l'on cherche a prevoir). 
- * Dans le cas du titanic, un Integer 0 (mort) ou 1 (vivant).
+ * 
+ * @author mathieu
+ *
+ * @param <T> le type de retour : Integer si mort ou vivant, String pour nom du fruit/légume
  */
-public interface DataObject<U> {
+public interface DataObject<T> {
 
-    public U getLabel();
-    
-    public int classificationForFeature(Feature<?> feature);
-    
-    public int[][] getOverview(List<Feature<?>> features);
+    Object getValueForFeature(String feature);
+    T getAnswerValue();
+    void setAnswerValue(T value);
 }

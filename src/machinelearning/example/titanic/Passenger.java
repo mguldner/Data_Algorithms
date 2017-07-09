@@ -1,139 +1,97 @@
 package machinelearning.example.titanic;
 
-import java.util.List;
-
-import machinelearning.decisiontree.Feature;
 import machinelearning.decisiontree.features.Frame;
 import machinelearning.general.DataObject;
 
-public class Passenger implements DataObject<Integer>{
+public class Passenger implements DataObject<Boolean>{
 
-    private Integer passengerId;
-    private Integer pClass;
-    private Boolean isMale;
-    private Integer age;
-    private Integer sibSpNb;
-    private Integer parChNb;
-    private String ticket;
-    private Double fare;
-    private String cabin;
-    private String embarked;
-    private Integer survived;
-    
-    public Passenger(int passengerId, int pClass, boolean isMale, int age,
-            int sibSpNb, int parChNb, String ticket, double fare, String cabin, String embarked) {
-        super();
-        this.passengerId = passengerId;
-        this.pClass = pClass;
-        this.isMale = isMale;
-        this.age = age;
-        this.sibSpNb = sibSpNb;
-        this.parChNb = parChNb;
-        this.ticket = ticket;
-        this.fare = fare;
-        this.cabin = cabin;
-        this.embarked = embarked;
-    }
+  private Integer passengerId;
+  private Integer pClass;
+  private Boolean isMale;
+  private Frame age;
+  private Integer sibSpNb;
+  private Integer parChNb;
+  private Frame fare;
+  // Not useful
+  //private String cabin;
+  private String embarked;
+  private Boolean survived;
 
-    public int getPassengerId() {
-        return passengerId;
-    }
+  public Passenger(int passengerId, int pClass, boolean isMale, Frame age,
+      int sibSpNb, int parChNb, Frame fare, String embarked) {
+    super();
+    this.passengerId = passengerId;
+    this.pClass = pClass;
+    this.isMale = isMale;
+    this.age = age;
+    this.sibSpNb = sibSpNb;
+    this.parChNb = parChNb;
+    this.fare = fare;
+    this.embarked = embarked;
+  }
 
-    public int getpClass() {
-        return pClass;
-    }
+  public int getPassengerId() {
+    return passengerId;
+  }
 
-    public boolean isMale() {
-        return isMale;
-    }
+  public int getpClass() {
+    return pClass;
+  }
 
-    public int getAge() {
-        return age;
-    }
+  public boolean isMale() {
+    return isMale;
+  }
 
-    public int getSibSpNb() {
-        return sibSpNb;
-    }
+  public Frame getAge() {
+    return age;
+  }
 
-    public int getParChNb() {
-        return parChNb;
-    }
+  public int getSibSpNb() {
+    return sibSpNb;
+  }
 
-    public String getTicket() {
-        return ticket;
-    }
+  public int getParChNb() {
+    return parChNb;
+  }
 
-    public double getFare() {
-        return fare;
-    }
+  public Frame getFare() {
+    return fare;
+  }
 
-    public String getCabin() {
-        return cabin;
-    }
+  public String getEmbarked() {
+    return embarked;
+  }
 
-    public String getEmbarked() {
-        return embarked;
+  @Override
+  public Object getValueForFeature(String feature) {
+    switch(feature){
+    case "pClass":
+      return pClass;
+    case "isMale":
+      return isMale;
+    case "age":
+      return age;
+    case "sibSpNb":
+      return sibSpNb;
+    case "parChNb":
+      return parChNb;
+    case "fare":
+      return fare;
+    case "embarked":
+      return embarked;
+    default:
+      System.err.println("[ERROR:Passenger2] No value for feature " + feature);
+      return null;
     }
+  }
 
-    @Override
-    public Integer getLabel() {
-        return survived;
-    }
-    
-    public void setLabel(Integer label){
-        this.survived = label;
-    }
+  @Override
+  public Boolean getAnswerValue() {
+    return survived;
+  }
 
-    /*
-     * Compare la liste des features avec les valeurs de l'objet et retourne l'index associé
-     */
-    @Override
-    public int classificationForFeature(Feature<?> feature) {
-        switch(feature.getName()){
-        case "pClass":
-            return feature.getPossibleValues().indexOf(this.pClass);
-        case "isMale":
-            return feature.getPossibleValues().indexOf(this.isMale);
-        case "age":
-            List<Frame> frameAgeList = (List<Frame>) feature.getPossibleValues();
-            int indexAge = -1;
-            for(int i=0; i<frameAgeList.size(); i++){
-                if(this.age>=frameAgeList.get(i).getMin() && this.age<frameAgeList.get(i).getMax())
-                    indexAge = i;
-            }
-            return indexAge;
-        case "sibSpNb":
-            return feature.getPossibleValues().indexOf(this.sibSpNb);
-        case "parChNb":
-            return feature.getPossibleValues().indexOf(this.parChNb);
-        case "fare":
-            List<Frame> frameFareList = (List<Frame>) feature.getPossibleValues();
-            int indexFare = -1;
-            for(int i=0; i<frameFareList.size(); i++){
-                if(this.fare>=frameFareList.get(i).getMin() && this.fare<=frameFareList.get(i).getMax())
-                    indexFare = i;
-            }
-            return indexFare;
-        case "embarked":
-            return feature.getPossibleValues().indexOf(this.embarked);
-        default:
-            System.err.println("Erreur : Passenger.java, methode compare, default case du switch");
-        }
-        return -1;
-    }
-
-    @Override
-    public int[][] getOverview(List<Feature<?>> features) {
-        // A externaliser pour ne pas répéter l'action
-        String [][] overviewFeatures = new String[features.size()][];
-        for(int i=0; i<features.size(); i++){
-            overviewFeatures[i] = new String[features.get(i).getPossibleValues().size()];
-            for(int j=0; j<features.get(i).getPossibleValues().size(); j++){
-                overviewFeatures[i][j] = features.get(i).getPossibleValues().get(j).toString();
-            }
-        }
-        
-        
-        return null;
-    }
+  @Override
+  public void setAnswerValue(Boolean value) {
+    this.survived = value;
+  }
 }

@@ -1,49 +1,44 @@
 package machinelearning.decisiontree.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/*
- * La valeur associee a un Node permet de dire quel est la reponse la plus probable 
- * pour ce Node, même si une plus precise peut se trouver en continuant dans ses enfants.
- */
+import java.util.Map;
 
 public class Node<T> extends Tree<T> {
 
-    private List<Tree<T>> children;
-    
-    public Node(T value, Tree<T> parent, List<Tree<T>> children) {
-        super(value, parent);
-        this.children = children;
-    }
-    
-    public Node(T value, Tree<T> parent) {
-        super(value, parent);
-        this.children = new ArrayList<>();
-    }
-    
-    public Node(T value, List<Tree<T>> children) {
+    private Map<Object,Tree<T>> children;
+    private String feature;
+
+    public Node(String feature, Map<Object,Tree<T>> children, T value) {
         super(value);
+        this.feature = feature;
         this.children = children;
-    }
-    
-    public Node(T value) {
-        super(value);
-    }
-    
-    public List<Tree<T>> getChildren(){
-        return this.children;
-    }
-    
-    public Tree<T> getChild(int index){
-        return this.children.get(index);
     }
 
-    public void addChild(Tree<T> child){
-        this.children.add(child);
+    public Map<Object,Tree<T>> getChildren(){
+        return this.children;
     }
-    
-    public void setChildren(List<Tree<T>> children){
+
+    public Tree<T> getChild(Object featureValue){
+        return this.children.get(featureValue);
+    }
+
+    public void setChildren(Map<Object,Tree<T>> children){
         this.children = children;
+    }
+
+    public String getFeature() {
+        return feature;
+    }
+
+    public void setFeature(String feature) {
+        this.feature = feature;
+    }
+
+    @Override
+    public String toPrintableTree() {
+        String str = "<" + this.getFeature() + " : ";
+        for(Map.Entry<Object, Tree<T>> entry : this.children.entrySet()){
+            str += entry.getKey() + "=" + entry.getValue().toPrintableTree() + ", ";
+        }
+        return str.substring(0, str.length()-2) + ">";
     }
 }
