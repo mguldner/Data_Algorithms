@@ -11,9 +11,8 @@ import java.util.stream.Collectors;
 import machinelearning.decisiontree.DecisionTreeAlgorithm;
 import machinelearning.decisiontree.data.Tree;
 import machinelearning.decisiontree.features.Frame;
+import machinelearning.general.ScoreUtils;
 import machinelearning.general.exception.MissingValueException;
-import machinelearning.general.lossfunction.LossFunction;
-import machinelearning.general.lossfunction.SquareLossFunction;
 
 public class RunExample {
 
@@ -97,7 +96,7 @@ public class RunExample {
             System.out.println(p.getPassengerId()+","+(p.getAnswerValue()==true?1:0));
         }
 
-        LossFunction<Boolean> lossFunction = new SquareLossFunction<>();
+        ScoreUtils<Boolean> scoreUtils = new ScoreUtils<>();
         List<Boolean> reality = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(testAnswersFile))){
             String line;
@@ -116,7 +115,7 @@ public class RunExample {
         List<Boolean> prediction = testSet.stream().map(Passenger::getAnswerValue).collect(Collectors.toList());
         double accuracy = -1;
         try {
-            accuracy = lossFunction.getAccuracy(reality, prediction);
+            accuracy = scoreUtils.getAccuracy(reality, prediction);
         } catch (MissingValueException e) {
             e.printStackTrace();
         }

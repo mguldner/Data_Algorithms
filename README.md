@@ -14,8 +14,11 @@ For now, only one example hic, I think, will further be used to test the differe
 ### Algorithms
 
 #### In-development algorithm
+* [In mind]
 
-[In progress]
+** SVM
+
+* [In progress]
 
 #### Working Algorithm
 
@@ -27,4 +30,7 @@ For now, only one example hic, I think, will further be used to test the differe
 
 ### Loss Functions
 
-For now, only one LossFunction, which is wrong implemented. TODO !
+For now, the only use case I used is Titanic : a Binary Classification.
+Therefore, I will implement the loss functions : 
+ * Hinge Loss
+ * Logistic Loss
