@@ -13,6 +13,8 @@ import machinelearning.decisiontree.data.Tree;
 import machinelearning.decisiontree.features.Frame;
 import machinelearning.general.ScoreUtils;
 import machinelearning.general.exception.MissingValueException;
+import machinelearning.general.lossfunction.HingeLossFunction;
+import machinelearning.general.lossfunction.LogisticLossFunction;
 
 public class RunExample {
 
@@ -96,7 +98,6 @@ public class RunExample {
             System.out.println(p.getPassengerId()+","+(p.getAnswerValue()==true?1:0));
         }
 
-        ScoreUtils<Boolean> scoreUtils = new ScoreUtils<>();
         List<Boolean> reality = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(testAnswersFile))){
             String line;
@@ -115,7 +116,11 @@ public class RunExample {
         List<Boolean> prediction = testSet.stream().map(Passenger::getAnswerValue).collect(Collectors.toList());
         double accuracy = -1;
         try {
-            accuracy = scoreUtils.getAccuracy(reality, prediction);
+            ScoreUtils<Boolean> sU = new ScoreUtils<Boolean>(prediction, reality, true, false);
+            accuracy = sU.getAccuracy();
+            System.out.println(sU.toString());
+            System.out.println("logisticSum = " + new LogisticLossFunction().getDiscrepancy(prediction, reality));
+            System.out.println("hingeSum = " + new HingeLossFunction().getDiscrepancy(prediction, reality));
         } catch (MissingValueException e) {
             e.printStackTrace();
         }
@@ -211,7 +216,7 @@ public class RunExample {
         else if(fare <= 1000)
             return new Frame(164,1000);
         else{
-            System.err.println("[INFO:RunExample2] Missing Frame for fare.");
+            System.err.println("[INFO:RunExample] Missing Frame for fare.");
             return null;
         }
     }
@@ -219,7 +224,14 @@ public class RunExample {
     public static void main(String[] args) {
         RunExample runExample = new RunExample();
         try{
-            System.out.println("\n\nAccuracy : " + runExample.runAlgorithm(0.95));
+            /*System.out.println("0.80 : ");
+            runExample.runAlgorithm(0.80);
+            System.out.println("\n\n\n0.85");
+            runExample.runAlgorithm(0.85);
+            System.out.println("\n\n\n0.95");
+            runExample.runAlgorithm(0.95);
+            System.out.println("\n\n\n1");*/
+            runExample.runAlgorithm(1);
         } catch (IOException e) {
             e.printStackTrace();
         }
