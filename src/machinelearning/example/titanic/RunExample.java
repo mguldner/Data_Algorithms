@@ -5,16 +5,24 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import machinelearning.decisiontree.DecisionTreeAlgorithm;
 import machinelearning.decisiontree.data.Tree;
 import machinelearning.decisiontree.features.Frame;
 import machinelearning.general.ScoreUtils;
+import machinelearning.general.exception.AlgorithmException;
 import machinelearning.general.exception.MissingValueException;
 import machinelearning.general.lossfunction.HingeLossFunction;
 import machinelearning.general.lossfunction.LogisticLossFunction;
+import machinelearning.kmeans.DoubleComparator;
+import machinelearning.kmeans.DoubleMeanTool;
+import machinelearning.kmeans.KMeansAlgorithm;
 
 public class RunExample {
 
@@ -23,7 +31,7 @@ public class RunExample {
     final static String testFile = folder + "/test.csv";
     final static String testAnswersFile = folder + "/gender_submission.csv";
 
-    public double runAlgorithm(double trustProbability) throws FileNotFoundException, IOException {
+    public double runAlgorithm(double trustProbability) throws FileNotFoundException, IOException, AlgorithmException {
         ArrayList<Passenger> trainingSet = new ArrayList<Passenger>();
 
         try(BufferedReader br = new BufferedReader(new FileReader(trainingFile))){
@@ -41,10 +49,10 @@ public class RunExample {
                             Integer.parseInt(values[0]),
                             Integer.parseInt(values[2]),
                             "male".equals(values[3]),
-                            getAgeFrame(Double.parseDouble(values[4])),
+                            Double.parseDouble(values[4]),
                             Integer.parseInt(values[5]),
                             Integer.parseInt(values[6]),
-                            getFareFrame(Double.parseDouble(values[8])),
+                            Double.parseDouble(values[8]),
                             values[10]);
                     tmpPassenger.setAnswerValue(Integer.parseInt(values[1]) == 1);
                     trainingSet.add(tmpPassenger);
@@ -53,7 +61,7 @@ public class RunExample {
         } catch(Exception e){
             e.printStackTrace();
         }
-
+        
         ArrayList<Passenger> testSet = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(testFile))){
             String line;
@@ -69,10 +77,10 @@ public class RunExample {
                             Integer.parseInt(values[0]),
                             Integer.parseInt(values[1]),
                             "male".equals(values[2]),
-                            getAgeFrame(Double.parseDouble(values[3])),
+                            Double.parseDouble(values[3]),
                             Integer.parseInt(values[4]),
                             Integer.parseInt(values[5]),
-                            getFareFrame(Double.parseDouble(values[7])),
+                            Double.parseDouble(values[7]),
                             values[9]);
                     testSet.add(tmpPassenger);
                 }
@@ -81,13 +89,49 @@ public class RunExample {
             e.printStackTrace();
         }
 
+        int kAge = 5;
+        List<Frame> ageFrames = getDoubleFrames(trainingSet.stream().map(Passenger::getAge).collect(Collectors.toList()), kAge);
+        System.out.println("Age frames : \n");
+        for(Frame f : ageFrames){
+            System.out.println(f.getMin() + "  --  " + f.getMax() + "\n");
+        }
+        int kFare = 5;
+        List<Frame> fareFrames = getDoubleFrames(trainingSet.stream().map(Passenger::getFare).collect(Collectors.toList()), kFare);
+        System.out.println("Fare frames : \n");
+        for(Frame f : fareFrames){
+            System.out.println(f.getMin() + "  --  " + f.getMax() + "\n");
+        }
+        List<Passenger> allPassengers = new ArrayList<Passenger>(trainingSet);
+        allPassengers.addAll(testSet);
+        for(Passenger p : allPassengers){
+            boolean ageFrameSet = false;
+            for(Frame f : ageFrames){
+                if(p.getAge() >= f.getMin() && p.getAge() <= f.getMax()){
+                    p.setAgeFrame(f);
+                    ageFrameSet = true;
+                }
+            }
+            boolean fareFrameSet = false;
+            for(Frame f : fareFrames){
+                if(p.getFare() >= f.getMin() && p.getFare() <= f.getMax()){
+                    p.setFareFrame(f);
+                    fareFrameSet = true;
+                }
+            }
+            if(!ageFrameSet)
+                throw new AlgorithmException("[RunExample] The Passenger " + p.getPassengerId() + " has no Frame for age.");
+            if(!fareFrameSet)
+                throw new AlgorithmException("[RunExample] The Passenger " + p.getPassengerId() + " has no Frame for fare.");
+        }
+        
+        
         List<String> features = new ArrayList<>();
         features.add("pClass");
         features.add("isMale");
-        features.add("age");
+        features.add("ageFrame");
         features.add("sibSpNb");
         features.add("parChNb");
-        features.add("fare");
+        features.add("fareFrame");
         features.add("embarked");
 
         DecisionTreeAlgorithm<Boolean, Passenger> algorithm = new DecisionTreeAlgorithm<>(trustProbability);
@@ -125,6 +169,33 @@ public class RunExample {
             e.printStackTrace();
         }
         return accuracy;
+    }
+    
+    public List<Frame> getDoubleFrames(List<Double> data, int k) throws AlgorithmException{
+        KMeansAlgorithm<Double> kMeansAlgorithm = new KMeansAlgorithm<>(new DoubleComparator(), new DoubleMeanTool());
+        Map<Integer, ArrayList<Double>> framesData = kMeansAlgorithm.apply(data, k);
+        
+        List<Frame> frames = new ArrayList<Frame>();
+        for (Entry<Integer, ArrayList<Double>> entry : framesData.entrySet())
+        {
+            List<Double> entryValue = entry.getValue();
+            Frame frame = new Frame(Collections.min(entryValue), Collections.max(entryValue));
+            if(frames.isEmpty())
+                frames.add(frame);
+            else{
+                boolean frameInserted = false;
+                for(int i=0; i<frames.size(); i++) {
+                    if(!frameInserted && frames.get(i).getMin() >= frame.getMax()){
+                        frames.add(i, frame);
+                    }
+                }
+                if(!frameInserted && frame.getMin() >= frames.get(frames.size()-1).getMax())
+                    frames.add(frame);
+                else
+                    throw new AlgorithmException("[RunExample] The frames are not right done by the K-Means algorithm.");
+            }
+        }
+        return frames;
     }
 
     public Frame getAgeFrame(double age){
@@ -221,7 +292,7 @@ public class RunExample {
         }
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws AlgorithmException {
         RunExample runExample = new RunExample();
         try{
             /*System.out.println("0.80 : ");
@@ -231,7 +302,7 @@ public class RunExample {
             System.out.println("\n\n\n0.95");
             runExample.runAlgorithm(0.95);
             System.out.println("\n\n\n1");*/
-            runExample.runAlgorithm(1);
+            runExample.runAlgorithm(0.95);
         } catch (IOException e) {
             e.printStackTrace();
         }

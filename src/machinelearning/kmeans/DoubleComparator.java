@@ -1,4 +1,4 @@
-import java.lang.Math.abs;
+package machinelearning.kmeans;
 
 public class DoubleComparator implements GenericComparator<Double> {
 
