@@ -16,11 +16,11 @@ For now, only one example hic, I think, will further be used to test the differe
 #### In-development algorithm
 * [In mind]
 
-...* SVM
+    * SVM
 
 * [In progress]
 
-...* K-Means
+    * K-Means
 
 #### Working Algorithm
 
