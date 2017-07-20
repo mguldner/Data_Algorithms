@@ -10,17 +10,20 @@ public class KMeansAlgorithm<T> {
 
     private GenericComparator<T> comparator = null;
     private MeanTool<T> meanTool = null;
+    private Randomizer<T> randomizer = null;
 
-    public KMeansAlgorithm(GenericComparator<T> comparator, MeanTool<T> meanTool){
+    public KMeansAlgorithm(GenericComparator<T> comparator, MeanTool<T> meanTool, Randomizer<T> randomizer){
         this.comparator = comparator;
         this.meanTool = meanTool;
+        this.randomizer = randomizer;
     }
 
     public Map<Integer, ArrayList<T>> apply(List<T> data, int k){
         Map<Integer, T> centroids = new HashMap<Integer, T>();
         Map<Integer, ArrayList<T>> associatedPoints = new HashMap<Integer, ArrayList<T>>();
+        List<T> randomizedData = randomizer.getNRandomObject(k, data);
         for(int i=0; i<k; i++){
-            centroids.put(i, null); //TODO Randomize
+            centroids.put(i, randomizedData.get(i));
         }
         boolean hasChanged = true;
         while(hasChanged){
@@ -33,7 +36,7 @@ public class KMeansAlgorithm<T> {
                 associatedPoints.get(closestCluster).add(data.get(i));
             }
             for(int i=0; i<k; i++){
-                T mean = getMean(associatedPoints.get(i));
+                T mean = this.meanTool.getMean(associatedPoints.get(i));
                 if(!mean.equals(centroids.get(i))){
                     hasChanged = true;
                     centroids.put(i, mean);
@@ -47,7 +50,7 @@ public class KMeansAlgorithm<T> {
         double minDistance = Double.MAX_VALUE;
         int closest = -1;
         for(int i=0; i<centroids.size(); i++){
-            double distance = getDistance(centroids.get(i), dataPoint);
+            double distance = this.comparator.distanceBetween(centroids.get(i), dataPoint);
             if(distance < minDistance){
                 minDistance = distance;
                 closest = i;
@@ -56,11 +59,4 @@ public class KMeansAlgorithm<T> {
         return closest;
     }
 
-    public double getDistance(T v1, T v2){
-        return this.comparator.distanceBetween(v1, v2);
-    }
-
-    public T getMean(List<T> points){
-        return this.meanTool.getMean(points);
-    }
 }

@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,6 +21,7 @@ import machinelearning.general.lossfunction.HingeLossFunction;
 import machinelearning.general.lossfunction.LogisticLossFunction;
 import machinelearning.kmeans.DoubleComparator;
 import machinelearning.kmeans.DoubleMeanTool;
+import machinelearning.kmeans.DoubleRandomizer;
 import machinelearning.kmeans.KMeansAlgorithm;
 
 public class RunExample {
@@ -172,7 +172,7 @@ public class RunExample {
     }
     
     public List<Frame> getDoubleFrames(List<Double> data, int k) throws AlgorithmException{
-        KMeansAlgorithm<Double> kMeansAlgorithm = new KMeansAlgorithm<>(new DoubleComparator(), new DoubleMeanTool());
+        KMeansAlgorithm<Double> kMeansAlgorithm = new KMeansAlgorithm<>(new DoubleComparator(), new DoubleMeanTool(), new DoubleRandomizer());
         Map<Integer, ArrayList<Double>> framesData = kMeansAlgorithm.apply(data, k);
         
         List<Frame> frames = new ArrayList<Frame>();
@@ -185,6 +185,7 @@ public class RunExample {
             else{
                 boolean frameInserted = false;
                 for(int i=0; i<frames.size(); i++) {
+                    System.out.print(i+" ");
                     if(!frameInserted && frames.get(i).getMin() >= frame.getMax()){
                         frames.add(i, frame);
                     }
