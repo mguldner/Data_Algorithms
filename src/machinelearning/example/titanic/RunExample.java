@@ -172,7 +172,7 @@ public class RunExample {
     }
     
     public List<Frame> getDoubleFrames(List<Double> data, int k) throws AlgorithmException{
-        KMeansAlgorithm<Double> kMeansAlgorithm = new KMeansAlgorithm<>(new DoubleComparator(), new DoubleMeanTool(), new DoubleRandomizer());
+        KMeansAlgorithm<Double> kMeansAlgorithm = new KMeansAlgorithm<>(new DoubleComparator(), new DoubleMeanTool(), new DoubleRandomizer(data));
         Map<Integer, ArrayList<Double>> framesData = kMeansAlgorithm.apply(data, k);
         
         List<Frame> frames = new ArrayList<Frame>();

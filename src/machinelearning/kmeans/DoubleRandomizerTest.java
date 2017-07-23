@@ -17,8 +17,8 @@ public class DoubleRandomizerTest {
         testData.add(67.9);
         testData.add(-23.9);
         testData.add(54.0);
-        DoubleRandomizer doubleRandomizer = new DoubleRandomizer();
-        List<Double> randomizedData = doubleRandomizer.getNRandomObject(7, testData);
+        DoubleRandomizer doubleRandomizer = new DoubleRandomizer(testData);
+        List<Double> randomizedData = doubleRandomizer.getNRandomObject(7);
         assertTrue(randomizedData.size() == 7);
         for(Double rData : randomizedData){
             assertTrue(rData >= -23.9 && rData <= 67.9);

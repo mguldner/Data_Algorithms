@@ -4,5 +4,7 @@ import java.util.List;
 
 public interface Randomizer<T> {
 
-    List<T> getNRandomObject(int n, List<T> data);
+    List<T> getNRandomObject(int n);
+    
+    T getRandomObject();
 }

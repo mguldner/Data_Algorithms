@@ -21,7 +21,7 @@ public class KMeansAlgorithm<T> {
     public Map<Integer, ArrayList<T>> apply(List<T> data, int k){
         Map<Integer, T> centroids = new HashMap<Integer, T>();
         Map<Integer, ArrayList<T>> associatedPoints = new HashMap<Integer, ArrayList<T>>();
-        List<T> randomizedData = randomizer.getNRandomObject(k, data);
+        List<T> randomizedData = randomizer.getNRandomObject(k);
         for(int i=0; i<k; i++){
             centroids.put(i, randomizedData.get(i));
         }
@@ -36,12 +36,20 @@ public class KMeansAlgorithm<T> {
                 associatedPoints.get(closestCluster).add(data.get(i));
             }
             for(int i=0; i<k; i++){
-                T mean = this.meanTool.getMean(associatedPoints.get(i));
-                if(!mean.equals(centroids.get(i))){
-                    hasChanged = true;
-                    centroids.put(i, mean);
+                if(associatedPoints.get(i).isEmpty()){
+                    centroids.put(i, randomizer.getRandomObject());
+                }
+                else{
+                    T mean = this.meanTool.getMean(associatedPoints.get(i));
+                    if(!mean.equals(centroids.get(i))){
+                        hasChanged = true;
+                        centroids.put(i, mean);
+                    }
                 }
             }
+        }
+        for(Map.Entry<Integer, T> entry : centroids.entrySet()){
+            System.out.println(entry.getKey() + " : " + entry.getValue() + "\n");
         }
         return associatedPoints;
     }
