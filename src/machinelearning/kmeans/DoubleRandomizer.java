@@ -10,6 +10,8 @@ public class DoubleRandomizer implements Randomizer<Double> {
     private double rangeMax;
     private Random r;
 
+    public DoubleRandomizer(){}
+    
     public DoubleRandomizer(List<Double> data) {
         rangeMin = data.stream().reduce((i,j) -> i > j ? j : i).get();
         rangeMax = data.stream().reduce((i,j) -> i > j ? i : j).get();
@@ -29,5 +31,7 @@ public class DoubleRandomizer implements Randomizer<Double> {
     public Double getRandomObject() {
         return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
     }
+    
+    
 
 }
