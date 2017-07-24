@@ -13,4 +13,10 @@ public class DoubleMeanTool implements MeanTool<Double>{
         return sum/points.size();
     }
 
+    @Override
+    public boolean isEquivalentTo(Double point) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

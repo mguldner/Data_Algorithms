@@ -1,21 +1,55 @@
-package machinelearning.kmeans;
+package machinelearning.kmeans2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 // TODO : The clusters are randomized but do not change -> have to !
 public class KMeansAlgorithm<T> {
 
-    private GenericComparator<T> comparator = null;
-    private MeanTool<T> meanTool = null;
-    private Randomizer<T> randomizer = null;
+    private List<Cluster<T>> clusters = null;
+    private int k;
+    private List<T> data = null;
+    private GenericTool<T> genericTool = null;
 
-    public KMeansAlgorithm(GenericComparator<T> comparator, MeanTool<T> meanTool, Randomizer<T> randomizer){
-        this.comparator = comparator;
-        this.meanTool = meanTool;
-        this.randomizer = randomizer;
+    public KMeansAlgorithm(List<T> data, int k, GenericTool<T> genericTool){
+        this.clusters = new ArrayList<>();
+        this.k = k;
+        this.data = data;
+        this.genericTool = genericTool;
+    }
+
+    public void init(){
+        int dataSize = this.data.size();
+        int clustersInitSize = dataSize / 3;
+        for(int i=0; i<k; i++){
+            int inf = i*clustersInitSize;
+            int sup = (i+1)*clustersInitSize;
+            if(i<k-1)
+                this.clusters.add(new Cluster<T>(i, data.subList(inf, sup), this.genericTool));
+            else
+                this.clusters.add(new Cluster<T>(i, data.subList(inf, dataSize), this.genericTool));
+        }
+    }
+
+    public void compute(){
+        List<T> previousCentroids = this.getCentroids();
+        boolean hasChanged = true;
+        while(hasChanged){
+            hasChanged = false;
+            this.clusters.stream().reduce(Cluster<T>::clearPoints);
+        }
+    }
+
+    public void run(){
+        init();
+        compute();
+    }
+
+    public List<T> getCentroids(){
+        return this.clusters.stream().map(Cluster<T>::getCentroid).collect(Collectors.toList());
     }
 
     public Map<Integer, ArrayList<T>> apply(List<T> data, int k){
@@ -41,7 +75,7 @@ public class KMeansAlgorithm<T> {
                 }
                 else{
                     hasChanged = meanTool.
-                    T mean = this.meanTool.getMean(associatedPoints.get(i));
+                            T mean = this.meanTool.getMean(associatedPoints.get(i));
                     if(!mean.isEquivalentTo(centroids.get(i))){
                         hasChanged = true;
                         centroids.put(i, mean);
@@ -69,3 +103,4 @@ public class KMeansAlgorithm<T> {
     }
 
 }
+
