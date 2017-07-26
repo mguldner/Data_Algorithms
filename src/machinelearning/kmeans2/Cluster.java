@@ -14,7 +14,7 @@ public class Cluster<T> {
         this.id = id;
         this.points = points;
         this.genericTool = genericTool;
-        this.centroid = this.genericTool.calculateMean(points);
+        assignCentroid();
     }
 
     public List<T> getPoints() {
@@ -43,5 +43,9 @@ public class Cluster<T> {
     
     public void clearPoints(){
         this.setPoints(new ArrayList<>());
+    }
+    
+    public void assignCentroid(){
+        this.centroid = this.genericTool.calculateMean(this.points);
     }
 }
