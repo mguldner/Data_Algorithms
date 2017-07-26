@@ -49,9 +49,8 @@ public class KMeansAlgorithm<T> {
                 setToClosestCluster(this.data.get(i));
             }
             this.clusters.stream().forEach(Cluster<T>::assignCentroid);
-            List<T> newCentroids = this.getCentroids();
             for(T centroid : previousCentroids){
-                if(!this.genericTool.areTheSame(previousCentroids.get(i), newCentroids.get(i)){
+                if(!this.genericTool.areTheSame(previousCentroids.get(i), this.getCentroids().get(i)){
                     hasChanged = true;
             }
         }
