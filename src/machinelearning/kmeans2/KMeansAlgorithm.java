@@ -39,7 +39,7 @@ public class KMeansAlgorithm<T> {
         boolean hasChanged = true;
         while(hasChanged){
             hasChanged = false;
-            this.clusters.stream().reduce(Cluster<T>::clearPoints);
+            this.clusters.stream().forEach(Cluster<T>::clearPoints);
         }
     }
 
