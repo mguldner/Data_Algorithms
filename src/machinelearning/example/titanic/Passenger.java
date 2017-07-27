@@ -70,7 +70,15 @@ public class Passenger implements DataObject<Boolean>{
     public void setFareFrame(Frame fareFrame) {
         this.fareFrame = fareFrame;
     }
+    
+    public boolean isAgeFrameSet(){
+        return this.ageFrame != null;
+    }
 
+    public boolean isFareFrameSet(){
+        return this.fareFrame != null;
+    }
+    
     @Override
     public Object getValueForFeature(String feature) {
         switch(feature){
