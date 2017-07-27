@@ -87,13 +87,13 @@ public class RunExample {
         }
         
         int kAge = 5;
-        List<Frame> ageFrames = getDoubleFrames(trainingSet.stream().map(Passenger::getAge).collect(Collectors.toList()), kAge);
+        List<Frame> ageFrames = getDoubleFrames(trainingSet.stream().filter(!Passenger::isAgeFrameSet).map(Passenger::getAge).collect(Collectors.toList()), kAge);
         System.out.println("Age frames : \n");
         for(Frame f : ageFrames){
             System.out.println(f.getMin() + "  --  " + f.getMax() + "\n");
         }
         int kFare = 5;
-        List<Frame> fareFrames = getDoubleFrames(trainingSet.stream().map(Passenger::getFare).collect(Collectors.toList()), kFare);
+        List<Frame> fareFrames = getDoubleFrames(trainingSet.stream().filter(!Passenger::isFareFrameSet).map(Passenger::getFare).collect(Collectors.toList()), kFare);
         System.out.println("Fare frames : \n");
         for(Frame f : fareFrames){
             System.out.println(f.getMin() + "  --  " + f.getMax() + "\n");
