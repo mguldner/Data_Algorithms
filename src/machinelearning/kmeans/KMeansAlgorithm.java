@@ -40,15 +40,15 @@ public class KMeansAlgorithm<T> {
                     centroids.put(i, randomizer.getRandomObject());
                 }
                 else{
-                    hasChanged = meanTool.
-                    T mean = this.meanTool.getMean(associatedPoints.get(i));
-                    if(!mean.isEquivalentTo(centroids.get(i))){
-                        hasChanged = true;
-                        centroids.put(i, mean);
+            //        hasChanged = meanTool.
+          //          T mean = this.meanTool.getMean(associatedPoints.get(i));
+            //        if(!mean.isEquivalentTo(centroids.get(i))){
+              //          hasChanged = true;
+                //        centroids.put(i, mean);
                     }
                 }
             }
-        }
+       // }
         for(Map.Entry<Integer, T> entry : centroids.entrySet()){
             System.out.println(entry.getKey() + " : " + entry.getValue() + "\n");
         }

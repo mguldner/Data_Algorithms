@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import machinelearning.decisiontree.DecisionTreeAlgorithm;
@@ -19,10 +17,9 @@ import machinelearning.general.exception.AlgorithmException;
 import machinelearning.general.exception.MissingValueException;
 import machinelearning.general.lossfunction.HingeLossFunction;
 import machinelearning.general.lossfunction.LogisticLossFunction;
-import machinelearning.kmeans.DoubleComparator;
-import machinelearning.kmeans.DoubleMeanTool;
-import machinelearning.kmeans.DoubleRandomizer;
-import machinelearning.kmeans.KMeansAlgorithm;
+import machinelearning.kmeans2.Cluster;
+import machinelearning.kmeans2.DoubleTool;
+import machinelearning.kmeans2.KMeansAlgorithm;
 
 public class RunExample {
 
@@ -88,7 +85,7 @@ public class RunExample {
         } catch(Exception e){
             e.printStackTrace();
         }
-
+        
         int kAge = 5;
         List<Frame> ageFrames = getDoubleFrames(trainingSet.stream().map(Passenger::getAge).collect(Collectors.toList()), kAge);
         System.out.println("Age frames : \n");
@@ -103,27 +100,14 @@ public class RunExample {
         }
         List<Passenger> allPassengers = new ArrayList<Passenger>(trainingSet);
         allPassengers.addAll(testSet);
-        for(Passenger p : allPassengers){
-            boolean ageFrameSet = false;
-            for(Frame f : ageFrames){
-                if(p.getAge() >= f.getMin() && p.getAge() <= f.getMax()){
-                    p.setAgeFrame(f);
-                    ageFrameSet = true;
-                }
+        allPassengers.stream().forEach(passenger -> {
+            try {
+                setAgeFrame(passenger, ageFrames);
+                setFareFrame(passenger, fareFrames);
+            } catch (AlgorithmException e) {
+                e.printStackTrace();
             }
-            boolean fareFrameSet = false;
-            for(Frame f : fareFrames){
-                if(p.getFare() >= f.getMin() && p.getFare() <= f.getMax()){
-                    p.setFareFrame(f);
-                    fareFrameSet = true;
-                }
-            }
-            if(!ageFrameSet)
-                throw new AlgorithmException("[RunExample] The Passenger " + p.getPassengerId() + " has no Frame for age.");
-            if(!fareFrameSet)
-                throw new AlgorithmException("[RunExample] The Passenger " + p.getPassengerId() + " has no Frame for fare.");
-        }
-        
+        });
         
         List<String> features = new ArrayList<>();
         features.add("pClass");
@@ -172,34 +156,64 @@ public class RunExample {
     }
     
     public List<Frame> getDoubleFrames(List<Double> data, int k) throws AlgorithmException{
-        KMeansAlgorithm<Double> kMeansAlgorithm = new KMeansAlgorithm<>(new DoubleComparator(), new DoubleMeanTool(), new DoubleRandomizer(data));
-        Map<Integer, ArrayList<Double>> framesData = kMeansAlgorithm.apply(data, k);
+        KMeansAlgorithm<Double> doubleKMeansAlgorithm = new KMeansAlgorithm<Double>(data, k, new DoubleTool());
+        doubleKMeansAlgorithm.run();
+        System.out.println("K-Means has run");
         
         List<Frame> frames = new ArrayList<Frame>();
-        for (Entry<Integer, ArrayList<Double>> entry : framesData.entrySet())
+        for (Cluster<Double> cluster : doubleKMeansAlgorithm.getClusters())
         {
-            List<Double> entryValue = entry.getValue();
-            Frame frame = new Frame(Collections.min(entryValue), Collections.max(entryValue));
+            List<Double> clusterPoints = cluster.getPoints();
+            Frame frame = new Frame(Collections.min(clusterPoints), Collections.max(clusterPoints));
             if(frames.isEmpty())
                 frames.add(frame);
             else{
                 boolean frameInserted = false;
                 for(int i=0; i<frames.size(); i++) {
-                    System.out.print(i+" ");
                     if(!frameInserted && frames.get(i).getMin() >= frame.getMax()){
                         frames.add(i, frame);
+                        frameInserted = true;
                     }
                 }
-                if(!frameInserted && frame.getMin() >= frames.get(frames.size()-1).getMax())
+                if(!frameInserted && frame.getMin() >= frames.get(frames.size()-1).getMax()){
                     frames.add(frame);
-                else
-                    throw new AlgorithmException("[RunExample] The frames are not right done by the K-Means algorithm.");
+                    frameInserted = true;
+                }
+                if(!frameInserted){
+                    System.out.println("Actual frames : \n" + frames.stream().map(f -> f.toString()).collect(Collectors.joining("\n")));
+                    System.out.println("New frame : " + frame.toString());
+                    throw new AlgorithmException("[RunExample] The frames done by the Double-K-Means algorithm are not right : they share same elements");
+                }
             }
         }
         return frames;
     }
+    
+    public void setAgeFrame(Passenger p, List<Frame> ageFrames) throws AlgorithmException{
+        boolean ageFrameSet = false;
+        for(Frame f : ageFrames){
+            if(p.getAge() >= f.getMin() && p.getAge() <= f.getMax()){
+                p.setAgeFrame(f);
+                ageFrameSet = true;
+            }
+        }
+        if(!ageFrameSet)
+            throw new AlgorithmException("[RunExample] The Passenger " + p.getPassengerId() + " has no Frame for age.");
+    }
+    
+    public void setFareFrame(Passenger p, List<Frame> fareFrames) throws AlgorithmException{
+        boolean fareFrameSet = false;
+        for(Frame f : fareFrames){
+            if(p.getFare() >= f.getMin() && p.getFare() <= f.getMax()){
+                p.setFareFrame(f);
+                fareFrameSet = true;
+            }
+        }
+        if(!fareFrameSet)
+            throw new AlgorithmException("[RunExample] The Passenger " + p.getPassengerId() + " has no Frame for fare.");
+    }
 
-    public Frame getAgeFrame(double age){
+/*    public Frame getAgeFrame(double age){
         if(0 <= age){
             if(age <= 6)
                 return new Frame(0,6);
@@ -292,6 +306,7 @@ public class RunExample {
             return null;
         }
     }
+   */
     
     public static void main(String[] args) throws AlgorithmException {
         RunExample runExample = new RunExample();

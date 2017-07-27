@@ -48,4 +48,8 @@ public class Cluster<T> {
     public void assignCentroid(){
         this.centroid = this.genericTool.calculateMean(this.points);
     }
+    
+    public int getSize(){
+        return this.points.size();
+    }
 }
