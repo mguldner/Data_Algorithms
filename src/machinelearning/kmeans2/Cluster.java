@@ -16,6 +16,12 @@ public class Cluster<T> {
         this.genericTool = genericTool;
         assignCentroid();
     }
+    
+    public Cluster(int id, T centroid, GenericTool<T> genericTool){
+        this.id = id;
+        this.centroid = centroid;
+        this.genericTool = genericTool;
+    }
 
     public List<T> getPoints() {
         return points;
@@ -45,8 +51,9 @@ public class Cluster<T> {
         this.setPoints(new ArrayList<>());
     }
     
-    public void assignCentroid(){
+    public boolean assignCentroid(){
         this.centroid = this.genericTool.calculateMean(this.points);
+        return this.centroid != null;
     }
     
     public int getSize(){

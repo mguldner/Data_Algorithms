@@ -74,10 +74,6 @@ public class Passenger implements DataObject<Boolean>{
     public boolean isAgeFrameSet(){
         return this.ageFrame != null;
     }
-
-    public boolean isFareFrameSet(){
-        return this.fareFrame != null;
-    }
     
     @Override
     public Object getValueForFeature(String feature) {

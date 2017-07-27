@@ -52,6 +52,8 @@ public class RunExample {
                             Double.parseDouble(values[8]),
                             values[10]);
                     tmpPassenger.setAnswerValue(Integer.parseInt(values[1]) == 1);
+                    if(values[4] == "-1")
+                        tmpPassenger.setAgeFrame(new Frame(-1, -1));
                     trainingSet.add(tmpPassenger);
                 }
             }
@@ -79,6 +81,8 @@ public class RunExample {
                             Integer.parseInt(values[5]),
                             Double.parseDouble(values[7]),
                             values[9]);
+                    if(values[3] == "-1")
+                        tmpPassenger.setAgeFrame(new Frame(-1, -1));
                     testSet.add(tmpPassenger);
                 }
             }
@@ -86,14 +90,16 @@ public class RunExample {
             e.printStackTrace();
         }
         
+        System.out.println("data ok");
+        
         int kAge = 5;
-        List<Frame> ageFrames = getDoubleFrames(trainingSet.stream().filter(!Passenger::isAgeFrameSet).map(Passenger::getAge).collect(Collectors.toList()), kAge);
+        List<Frame> ageFrames = getDoubleFrames(trainingSet.stream().filter(p -> !p.isAgeFrameSet()).map(Passenger::getAge).collect(Collectors.toList()), kAge);
         System.out.println("Age frames : \n");
         for(Frame f : ageFrames){
             System.out.println(f.getMin() + "  --  " + f.getMax() + "\n");
         }
         int kFare = 5;
-        List<Frame> fareFrames = getDoubleFrames(trainingSet.stream().filter(!Passenger::isFareFrameSet).map(Passenger::getFare).collect(Collectors.toList()), kFare);
+        List<Frame> fareFrames = getDoubleFrames(trainingSet.stream().map(Passenger::getFare).collect(Collectors.toList()), kFare);
         System.out.println("Fare frames : \n");
         for(Frame f : fareFrames){
             System.out.println(f.getMin() + "  --  " + f.getMax() + "\n");

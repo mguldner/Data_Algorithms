@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -27,16 +28,16 @@ public class KMeansAlgorithmDoubleTest {
         KMeansAlgorithm<Double> doubleKMAlgorithm = new KMeansAlgorithm<Double>(dataTest, 3, new DoubleTool());
         doubleKMAlgorithm.run();
         List<Cluster<Double>> clusters = doubleKMAlgorithm.getClusters();
-        assertTrue(clusters.size() == 3);
-        assertTrue(clusters.get(0).getSize() == 4);
-        assertTrue(clusters.get(1).getSize() == 4);
-        assertTrue(clusters.get(2).getSize() == 4);
-        /*for (Cluster<Double> cluster : clusters) {
+        for (Cluster<Double> cluster : clusters) {
             System.out.println(cluster.getCentroid() + "\n");
             String pointsOfCluster = cluster.getPoints().stream()
                     .map(i -> i.toString())
                     .collect(Collectors.joining(", "));
             System.out.println(pointsOfCluster + "\n\n");
-        }*/
+        }
+        assertTrue(clusters.size() == 3);
+        assertTrue(clusters.get(0).getSize() == 4);
+        assertTrue(clusters.get(1).getSize() == 4);
+        assertTrue(clusters.get(2).getSize() == 4);
     }
 }

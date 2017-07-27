@@ -19,7 +19,7 @@ public class KMeansAlgorithm<T> {
     }
     
     public void run(){
-        init();
+        initWithRandom();
         compute();
     }
     
@@ -35,18 +35,33 @@ public class KMeansAlgorithm<T> {
                 this.clusters.add(new Cluster<T>(i, data.subList(inf, dataSize), this.genericTool));
         }
     }
+    
+    public void initWithRandom(){
+        for(int i=0; i<k; i++){
+            this.clusters.add(new Cluster<T>(i, getRandomData(), this.genericTool));
+        }
+    }
 
     public void compute(){
         boolean hasChanged = true;
-        while(hasChanged){
+        int j=0;
+        while(hasChanged && j < 20){
+            j++;
             hasChanged = false;
             List<T> previousCentroids = this.getCentroids();
+            System.out.println(previousCentroids.stream().map(T::toString).collect(Collectors.joining(", ")));
             this.clusters.stream().forEach(Cluster<T>::clearPoints);
             for(int i=0; i<this.data.size(); i++){
                 setToClosestCluster(this.data.get(i));
             }
+            for(Cluster<T> cluster : this.clusters){
+                if(!cluster.assignCentroid()){
+                    cluster.setCentroid(getRandomData());
+                    System.out.println("randomization");
+                }
+            }
             this.clusters.stream().forEach(Cluster<T>::assignCentroid);
-            for(int i=0; i<previousCentroids.size(); i++){
+            for(int i=0; i<previousCentroids.size() && !hasChanged; i++){
                 if(!this.genericTool.areTheSame(previousCentroids.get(i), this.getCentroids().get(i)))
                     hasChanged = true;
             }
@@ -80,6 +95,10 @@ public class KMeansAlgorithm<T> {
 
     public void setK(int k) {
         this.k = k;
+    }
+    
+    public T getRandomData(){
+        return this.data.get((int)(Math.random() * (this.data.size()-1)));
     }
 
 }
