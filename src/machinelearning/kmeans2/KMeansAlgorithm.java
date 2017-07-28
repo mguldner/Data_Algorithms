@@ -18,6 +18,20 @@ public class KMeansAlgorithm<T> {
         this.genericTool = genericTool;
     }
     
+    public void runMultipleTime(int n){
+        List<Cluster<T>> bestClusters = new ArrayList<>();
+        double score = 0.0;
+        for(int i=0; i<n; i++){
+            this.run();
+            double clustersScore = this.getClustersScore(); 
+            if(clustersScore > score){
+                bestClusters = this.getClusters();
+                score = clustersScore;
+            }
+        }
+        this.clusters = bestClusters;
+    }
+    
     public void run(){
         initWithRandom();
         compute();
@@ -100,6 +114,10 @@ public class KMeansAlgorithm<T> {
     public T getRandomData(){
         return this.data.get((int)(Math.random() * (this.data.size()-1)));
     }
-
+    
+    public int getClustersScore(){
+        // Add distance between centroids + add 1/distance points to centroids
+        this.genericTool.distanceBetween();
+    }
 }
 
