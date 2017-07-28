@@ -8,11 +8,15 @@ public final class DoubleTool implements GenericTool<Double>{
     
     @Override
     public Double calculateMean(List<Double> points) {
-        double sum = 0;
-        for(Double d : points){
-            sum += d;
+        if(points.isEmpty())
+            return -1;
+        else{
+            double sum = 0;
+            for(Double d : points){
+                sum += d;
+            }
+            return sum/points.size();
         }
-        return sum/points.size();
     }
 
     @Override
