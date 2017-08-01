@@ -9,7 +9,7 @@ public final class DoubleTool implements GenericTool<Double>{
     @Override
     public Double calculateMean(List<Double> points) {
         if(points.isEmpty())
-            return -1;
+            return -1.0;
         else{
             double sum = 0;
             for(Double d : points){
