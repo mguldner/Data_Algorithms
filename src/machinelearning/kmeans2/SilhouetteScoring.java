@@ -11,6 +11,10 @@ public class SilhouetteScoring<T>{
       double a = 0.0;
       double b= 0.0;
       for(T point : cluster.getPoints()){
+        for(T otherPoint : cluster.getPoints()){
+          if(!otherPoint.equals(point))
+            a += genericTool.distanceBetween(point, otherPoint);
+        }
           
         a += genericTool.distanceBetween(po);
       }
