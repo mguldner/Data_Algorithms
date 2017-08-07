@@ -38,6 +38,7 @@ public class KMeansAlgorithm<T> {
     }
     
     public void init(){
+        this.clusters = new ArrayList<>();
         int dataSize = this.data.size();
         int clustersInitSize = dataSize / this.k;
         for(int i=0; i<k; i++){
@@ -51,6 +52,7 @@ public class KMeansAlgorithm<T> {
     }
     
     public void initWithRandom(){
+        this.clusters = new ArrayList<>();
         for(int i=0; i<k; i++){
             this.clusters.add(new Cluster<T>(i, getRandomData(), this.genericTool));
         }
@@ -116,7 +118,6 @@ public class KMeansAlgorithm<T> {
     }
     
     public double getClustersScore(){
-        // Add distance between centroids + add 1/distance points to centroids
         double score = 0.0;
         int clustersSize = this.clusters.size();
         for(int i=0; i<clustersSize; i++){
