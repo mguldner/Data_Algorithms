@@ -115,9 +115,23 @@ public class KMeansAlgorithm<T> {
         return this.data.get((int)(Math.random() * (this.data.size()-1)));
     }
     
-    public int getClustersScore(){
+    public double getClustersScore(){
         // Add distance between centroids + add 1/distance points to centroids
-        this.genericTool.distanceBetween();
+        double score = 0.0;
+        for(int i=0; i<this.getCentroids().size(); i++){
+            for(int j=0; j<this.getCentroids().size()-1; j++){
+                int indexSecondCentroid = (i+j+1)%(this.getCentroids().size());
+                score += this.genericTool.distanceBetween(this.getCentroids().get(i),this.getCentroids().get(indexSecondCentroid));
+            }
+        }
+        for(Cluster<T> cluster : this.getClusters()){
+            double distanceInCluster = 0.0;
+            for(T point : cluster.getpoints()){
+                distanceInCluster += this.genericTool.distanceBetween(point,cluster.getCentroid());
+            }
+            score += 1.0/distanceInCluster;
+        }
+        return score;
     }
 }
 
