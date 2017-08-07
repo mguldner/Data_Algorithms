@@ -122,7 +122,7 @@ public class KMeansAlgorithm<T> {
         for(int i=0; i<clustersSize; i++){
             for(int j=0; j<clustersSize-1; j++){
                 int indexSecondCentroid = (i+j+1)%(clustersSize);
-                score += this.genericTool.distanceBetween(this.clusters.get(i),this.clusters.get(indexSecondCentroid));
+                score += this.genericTool.distanceBetween(this.clusters.get(i).getCentroid(),this.clusters.get(indexSecondCentroid).getCentroid());
             }
         }
         for(Cluster<T> cluster : this.clusters){
