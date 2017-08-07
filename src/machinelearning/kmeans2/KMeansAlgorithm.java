@@ -117,23 +117,11 @@ public class KMeansAlgorithm<T> {
         return this.data.get((int)(Math.random() * (this.data.size()-1)));
     }
     
-    public double getClustersScore(){
-        double score = 0.0;
-        int clustersSize = this.clusters.size();
-        for(int i=0; i<clustersSize; i++){
-            for(int j=0; j<clustersSize-1; j++){
-                int indexSecondCentroid = (i+j+1)%(clustersSize);
-                score += this.genericTool.distanceBetween(this.clusters.get(i).getCentroid(),this.clusters.get(indexSecondCentroid).getCentroid());
-            }
+    public double getClustersScore(String scoring){
+        if("basic".equals(scoring)){
+            return Scoring.getBasicScore(this.clusters, this.genericTool); 
         }
-        for(Cluster<T> cluster : this.clusters){
-            double distanceInCluster = 0.0;
-            for(T point : cluster.getpoints()){
-                distanceInCluster += this.genericTool.distanceBetween(point,cluster.getCentroid());
-            }
-            score += 1.0/distanceInCluster;
-        }
-        return score;
+        return 0.0;
     }
 }
 
