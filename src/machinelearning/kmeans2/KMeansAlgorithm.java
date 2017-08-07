@@ -118,14 +118,14 @@ public class KMeansAlgorithm<T> {
     public double getClustersScore(){
         // Add distance between centroids + add 1/distance points to centroids
         double score = 0.0;
-        List<T> centroids = this.getCentroids();
-        for(int i=0; i<this.getClusters().size(); i++){
-            for(int j=0; j<this.getClusters().size()-1; j++){
-                int indexSecondCentroid = (i+j+1)%(this.getClusters().size());
-                score += this.genericTool.distanceBetween(centroids.get(i),centroids.get(indexSecondCentroid));
+        int clustersSize = this.clusters.size();
+        for(int i=0; i<clustersSize; i++){
+            for(int j=0; j<clustersSize-1; j++){
+                int indexSecondCentroid = (i+j+1)%(clustersSize);
+                score += this.genericTool.distanceBetween(this.clusters.get(i),this.clusters.get(indexSecondCentroid));
             }
         }
-        for(Cluster<T> cluster : this.getClusters()){
+        for(Cluster<T> cluster : this.clusters){
             double distanceInCluster = 0.0;
             for(T point : cluster.getpoints()){
                 distanceInCluster += this.genericTool.distanceBetween(point,cluster.getCentroid());
