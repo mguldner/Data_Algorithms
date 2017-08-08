@@ -17,13 +17,29 @@ public class KMeansAlgorithm<T> {
         this.data = data;
         this.genericTool = genericTool;
     }
-    
+
+    public List<Cluster<T>> getClusters() {
+        return clusters;
+    }
+
+    public int getK() {
+        return k;
+    }
+
+    public void setK(int k) {
+        this.k = k;
+    }
+
+    public List<T> getCentroids(){
+        return this.clusters.stream().map(Cluster<T>::getCentroid).collect(Collectors.toList());
+    }
+
     public void runMultipleTime(int n){
         List<Cluster<T>> bestClusters = new ArrayList<>();
         double score = 0.0;
         for(int i=0; i<n; i++){
             this.run();
-            double clustersScore = this.getClustersScore(); 
+            double clustersScore = this.getClustersScore("basic"); 
             if(clustersScore > score){
                 bestClusters = this.getClusters();
                 score = clustersScore;
@@ -31,12 +47,12 @@ public class KMeansAlgorithm<T> {
         }
         this.clusters = bestClusters;
     }
-    
+
     public void run(){
         initWithRandom();
         compute();
     }
-    
+
     public void init(){
         this.clusters = new ArrayList<>();
         int dataSize = this.data.size();
@@ -50,7 +66,7 @@ public class KMeansAlgorithm<T> {
                 this.clusters.add(new Cluster<T>(i, data.subList(inf, dataSize), this.genericTool));
         }
     }
-    
+
     public void initWithRandom(){
         this.clusters = new ArrayList<>();
         for(int i=0; i<k; i++){
@@ -84,10 +100,6 @@ public class KMeansAlgorithm<T> {
         }
     }
 
-    public List<T> getCentroids(){
-        return this.clusters.stream().map(Cluster<T>::getCentroid).collect(Collectors.toList());
-    }
-    
     public void setToClosestCluster(T dataPoint){
         double minDistance = Double.MAX_VALUE;
         int closest = -1;
@@ -101,27 +113,15 @@ public class KMeansAlgorithm<T> {
         this.clusters.get(closest).addPoint(dataPoint);
     }
 
-    public List<Cluster<T>> getClusters() {
-        return clusters;
-    }
-
-    public int getK() {
-        return k;
-    }
-
-    public void setK(int k) {
-        this.k = k;
-    }
-    
     public T getRandomData(){
         return this.data.get((int)(Math.random() * (this.data.size()-1)));
     }
-    
+
     public double getClustersScore(String scoring){
+        Scoring<T> scoringTool = new Scoring<T>(this.clusters, this.genericTool);
         if("basic".equals(scoring)){
-            return Scoring.getBasicScore(this.clusters, this.genericTool); 
+            return scoringTool.getBasicScore(); 
         }
         return 0.0;
     }
 }
-

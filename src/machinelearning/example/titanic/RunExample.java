@@ -29,7 +29,7 @@ public class RunExample {
     final static String testAnswersFile = folder + "/gender_submission.csv";
 
     public double runAlgorithm(double trustProbability) throws FileNotFoundException, IOException, AlgorithmException {
-        ArrayList<Passenger> trainingSet = new ArrayList<Passenger>();
+        ArrayList<Passenger> trainingSet = new ArrayList<>();
 
         try(BufferedReader br = new BufferedReader(new FileReader(trainingFile))){
             String line;
@@ -91,21 +91,17 @@ public class RunExample {
         }
         
         System.out.println("data ok");
-        
-        int kAge = 5;
-        List<Frame> ageFrames = getDoubleFrames(trainingSet.stream().filter(p -> !p.isAgeFrameSet()).map(Passenger::getAge).collect(Collectors.toList()), kAge);
-        System.out.println("Age frames : \n");
-        for(Frame f : ageFrames){
-            System.out.println(f.getMin() + "  --  " + f.getMax() + "\n");
-        }
-        int kFare = 5;
-        List<Frame> fareFrames = getDoubleFrames(trainingSet.stream().map(Passenger::getFare).collect(Collectors.toList()), kFare);
-        System.out.println("Fare frames : \n");
-        for(Frame f : fareFrames){
-            System.out.println(f.getMin() + "  --  " + f.getMax() + "\n");
-        }
+
         List<Passenger> allPassengers = new ArrayList<Passenger>(trainingSet);
         allPassengers.addAll(testSet);
+        
+        int kAge = 8;
+        List<Frame> ageFrames = getDoubleFrames(allPassengers.stream().filter(p -> !p.isAgeFrameSet()).map(Passenger::getAge).collect(Collectors.toList()), kAge);
+        ageFrames.add(new Frame(-1, -1));
+        
+        int kFare = 5;
+        List<Frame> fareFrames = getDoubleFrames(allPassengers.stream().map(Passenger::getFare).collect(Collectors.toList()), kFare);
+        
         allPassengers.stream().forEach(passenger -> {
             try {
                 setAgeFrame(passenger, ageFrames);
@@ -163,7 +159,7 @@ public class RunExample {
     
     public List<Frame> getDoubleFrames(List<Double> data, int k) throws AlgorithmException{
         KMeansAlgorithm<Double> doubleKMeansAlgorithm = new KMeansAlgorithm<Double>(data, k, new DoubleTool());
-        doubleKMeansAlgorithm.run();
+        doubleKMeansAlgorithm.runMultipleTime(10);
         System.out.println("K-Means has run");
         
         List<Frame> frames = new ArrayList<Frame>();

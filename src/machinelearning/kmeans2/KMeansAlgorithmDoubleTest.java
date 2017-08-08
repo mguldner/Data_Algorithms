@@ -26,8 +26,9 @@ public class KMeansAlgorithmDoubleTest {
         dataTest.add(44.6);
         dataTest.add(25.3);
         KMeansAlgorithm<Double> doubleKMAlgorithm = new KMeansAlgorithm<Double>(dataTest, 3, new DoubleTool());
-        doubleKMAlgorithm.run();
+        doubleKMAlgorithm.runMultipleTime(10);;
         List<Cluster<Double>> clusters = doubleKMAlgorithm.getClusters();
+        System.out.println("Resultats : \n\n\n");
         for (Cluster<Double> cluster : clusters) {
             System.out.println(cluster.getCentroid() + "\n");
             String pointsOfCluster = cluster.getPoints().stream()
