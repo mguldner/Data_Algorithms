@@ -27,10 +27,11 @@ public class RunExample {
     final static String trainingFile = folder + "/train.csv";
     final static String testFile = folder + "/test.csv";
     final static String testAnswersFile = folder + "/gender_submission.csv";
+    
+    private ArrayList<Passenger> trainingSet = new ArrayList<>();
+    private ArrayList<Passenger> testSet = new ArrayList<>();
 
-    public double runAlgorithm(double trustProbability) throws FileNotFoundException, IOException, AlgorithmException {
-        ArrayList<Passenger> trainingSet = new ArrayList<>();
-
+    public double initData() throws FileNotFoundException, IOException {
         try(BufferedReader br = new BufferedReader(new FileReader(trainingFile))){
             String line;
             boolean firstLine = true;
@@ -61,7 +62,6 @@ public class RunExample {
             e.printStackTrace();
         }
         
-        ArrayList<Passenger> testSet = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(testFile))){
             String line;
             boolean firstLine = true;
@@ -91,7 +91,9 @@ public class RunExample {
         }
         
         System.out.println("data ok");
-
+    }
+    
+    public double runPredictionAlgorithm(double trustProbability) throws FileNotFoundException, IOException, AlgorithmException {
         List<Passenger> allPassengers = new ArrayList<Passenger>(trainingSet);
         allPassengers.addAll(testSet);
         
@@ -320,8 +322,9 @@ public class RunExample {
             System.out.println("\n\n\n0.95");
             runExample.runAlgorithm(0.95);
             System.out.println("\n\n\n1");*/
-            runExample.runAlgorithm(0.95);
-        } catch (IOException e) {
+            runExample.initData();
+            runExample.runPredictionAlgorithm(0.95);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
