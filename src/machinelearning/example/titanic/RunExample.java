@@ -93,15 +93,33 @@ public class RunExample {
         System.out.println("data ok");
     }
     
-    public double runPredictionAlgorithm(double trustProbability) throws FileNotFoundException, IOException, AlgorithmException {
+    public int determineBestK(String attribute, int min, int max){
+        List<Double> data = null;
+        if("age".equals(attribute)){
+            data = allPassengers.stream().filter(p -> !p.isAgeFrameSet()).map(Passenger::getAge).collect(Collectors.toList());
+        }else if("fare".equals(attribute)){
+            data = allPassengers.stream().map(Passenger::getFare).collect(Collectors.toList());
+        }
+        int bestK = -1;
+        double bestScore = 0.0;
+        for(int k=min; k<=max; k+=){
+            KMeansAlgorithm<Double> doubleKMeansAlgorithm = new KMeansAlgorithm<Double>(data, k, new DoubleTool());
+            double score = doubleKMeansAlgorithm.getClustersScore("basic");
+            if(score > bestScore){
+                bestScore = score;
+                bestk = k;
+            }
+        }
+        return bestK;
+    }
+    
+    public void runPredictionAlgorithm(double trustProbability, int kAge, int kFare) throws FileNotFoundException, IOException, AlgorithmException {
         List<Passenger> allPassengers = new ArrayList<Passenger>(trainingSet);
         allPassengers.addAll(testSet);
         
-        int kAge = 8;
         List<Frame> ageFrames = getDoubleFrames(allPassengers.stream().filter(p -> !p.isAgeFrameSet()).map(Passenger::getAge).collect(Collectors.toList()), kAge);
         ageFrames.add(new Frame(-1, -1));
         
-        int kFare = 5;
         List<Frame> fareFrames = getDoubleFrames(allPassengers.stream().map(Passenger::getFare).collect(Collectors.toList()), kFare);
         
         allPassengers.stream().forEach(passenger -> {
@@ -129,7 +147,9 @@ public class RunExample {
             p.setAnswerValue(algorithm.test(trainedTree, p));
             System.out.println(p.getPassengerId()+","+(p.getAnswerValue()==true?1:0));
         }
-
+    }
+    
+    public void evaluateSolution(){
         List<Boolean> reality = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(testAnswersFile))){
             String line;
@@ -149,14 +169,12 @@ public class RunExample {
         double accuracy = -1;
         try {
             ScoreUtils<Boolean> sU = new ScoreUtils<Boolean>(prediction, reality, true, false);
-            accuracy = sU.getAccuracy();
             System.out.println(sU.toString());
             System.out.println("logisticSum = " + new LogisticLossFunction().getDiscrepancy(prediction, reality));
             System.out.println("hingeSum = " + new HingeLossFunction().getDiscrepancy(prediction, reality));
         } catch (MissingValueException e) {
             e.printStackTrace();
         }
-        return accuracy;
     }
     
     public List<Frame> getDoubleFrames(List<Double> data, int k) throws AlgorithmException{
@@ -323,7 +341,10 @@ public class RunExample {
             runExample.runAlgorithm(0.95);
             System.out.println("\n\n\n1");*/
             runExample.initData();
-            runExample.runPredictionAlgorithm(0.95);
+            int kAge = runExample.determineBestK("age", 2, 20);
+            int kFare= runExample.determineBestK("fare", 2, 25);
+            runExample.runPredictionAlgorithm(0.95, kAge, kFare);
+            runExample.evaluateSolution();
         } catch (Exception e) {
             e.printStackTrace();
         }
