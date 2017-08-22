@@ -36,3 +36,7 @@ For now, the only use case I used is Titanic : a Binary Classification.
 Therefore, I implemented the loss functions : 
  * Hinge Loss
  * Logistic Loss
+
+### TODO
+
+* Add test class for Scoring
