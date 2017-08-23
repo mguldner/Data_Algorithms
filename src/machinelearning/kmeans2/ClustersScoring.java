@@ -2,7 +2,7 @@ package machinelearning.kmeans2;
 
 import java.util.List;
 
-public class Scoring<T>{
+public class ClustersScoring<T>{
 
     List<Cluster<T>> clusters = null;
     GenericTool<T> genericTool = null;
