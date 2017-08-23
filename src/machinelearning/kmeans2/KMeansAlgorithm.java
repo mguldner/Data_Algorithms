@@ -118,7 +118,7 @@ public class KMeansAlgorithm<T> {
     }
 
     public double getClustersScore(String scoring){
-        Scoring<T> scoringTool = new Scoring<T>(this.clusters, this.genericTool);
+        ClustersScoring<T> scoringTool = new ClustersScoring<T>(this.clusters, this.genericTool);
         if("basic".equals(scoring)){
             return scoringTool.getBasicScore(); 
         }
