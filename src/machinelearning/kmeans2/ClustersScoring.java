@@ -7,7 +7,7 @@ public class ClustersScoring<T>{
     List<Cluster<T>> clusters = null;
     GenericTool<T> genericTool = null;
 
-    public Scoring(List<Cluster<T>> clusters, GenericTool<T> genericTool){
+    public ClustersScoring(List<Cluster<T>> clusters, GenericTool<T> genericTool){
         this.clusters = clusters;
         this.genericTool = genericTool;
     }
