@@ -2,6 +2,9 @@ package machinelearning.kmeans2;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 public class ClustersScoringTest {
@@ -28,9 +31,9 @@ public class ClustersScoringTest {
         distanceInC1 += dTool.distanceBetween(d13, d14);
         List<Double> pointsC2 = new ArrayList<>();
         double d21 = 0.0;
-        double d21 = -1.0;
-        double d21 = 1.0;
-        double d21 = 0.5;
+        double d22 = -1.0;
+        double d23 = 1.0;
+        double d24 = 0.5;
         pointsC2.add(d21);
         pointsC2.add(d22);
         pointsC2.add(d23);
@@ -77,12 +80,12 @@ public class ClustersScoringTest {
         score += 1.0/distanceInC2;
         score += 1.0/distanceInC3;
         
-        ClustersScoring<Double> cScoring = new ClustersScoring(clusters, dTool);
+        ClustersScoring<Double> cScoring = new ClustersScoring<Double>(clusters, dTool);
         double calculatedScore = cScoring.getBasicScore();
         assertTrue(dTool.areTheSame(calculatedScore, score));
     }
     
-    @Test
+   // @Test
     public void testSilhouetteScore() {
         
     }

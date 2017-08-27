@@ -28,10 +28,11 @@ public class RunExample {
     final static String testFile = folder + "/test.csv";
     final static String testAnswersFile = folder + "/gender_submission.csv";
     
-    private ArrayList<Passenger> trainingSet = new ArrayList<>();
-    private ArrayList<Passenger> testSet = new ArrayList<>();
+    private List<Passenger> trainingSet = new ArrayList<>();
+    private List<Passenger> testSet = new ArrayList<>();
+    private List<Passenger> allPassengers = null;
 
-    public double initData() throws FileNotFoundException, IOException {
+    public void initData() throws FileNotFoundException, IOException {
         try(BufferedReader br = new BufferedReader(new FileReader(trainingFile))){
             String line;
             boolean firstLine = true;
@@ -89,7 +90,8 @@ public class RunExample {
         } catch(Exception e){
             e.printStackTrace();
         }
-        
+        allPassengers = new ArrayList<Passenger>(trainingSet);
+        allPassengers.addAll(testSet);
         System.out.println("data ok");
     }
     
@@ -102,21 +104,18 @@ public class RunExample {
         }
         int bestK = -1;
         double bestScore = 0.0;
-        for(int k=min; k<=max; k+=){
+        for(int k=min; k<=max; k++){
             KMeansAlgorithm<Double> doubleKMeansAlgorithm = new KMeansAlgorithm<Double>(data, k, new DoubleTool());
             double score = doubleKMeansAlgorithm.getClustersScore("basic");
             if(score > bestScore){
                 bestScore = score;
-                bestk = k;
+                bestK = k;
             }
         }
         return bestK;
     }
     
     public void runPredictionAlgorithm(double trustProbability, int kAge, int kFare) throws FileNotFoundException, IOException, AlgorithmException {
-        List<Passenger> allPassengers = new ArrayList<Passenger>(trainingSet);
-        allPassengers.addAll(testSet);
-        
         List<Frame> ageFrames = getDoubleFrames(allPassengers.stream().filter(p -> !p.isAgeFrameSet()).map(Passenger::getAge).collect(Collectors.toList()), kAge);
         ageFrames.add(new Frame(-1, -1));
         
@@ -166,7 +165,6 @@ public class RunExample {
             e.printStackTrace();
         }
         List<Boolean> prediction = testSet.stream().map(Passenger::getAnswerValue).collect(Collectors.toList());
-        double accuracy = -1;
         try {
             ScoreUtils<Boolean> sU = new ScoreUtils<Boolean>(prediction, reality, true, false);
             System.out.println(sU.toString());
