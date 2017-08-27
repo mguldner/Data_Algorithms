@@ -23,12 +23,10 @@ public class ClustersScoringTest {
         pointsC1.add(d14);
         double centroid1 = (d11+d12+d13+d14)/4.0;
         double distanceInC1 = 0.0;
-        distanceInC1 += dTool.distanceBetween(d11, d12);
-        distanceInC1 += dTool.distanceBetween(d11, d13);
-        distanceInC1 += dTool.distanceBetween(d11, d14);
-        distanceInC1 += dTool.distanceBetween(d12, d13);
-        distanceInC1 += dTool.distanceBetween(d12, d14);
-        distanceInC1 += dTool.distanceBetween(d13, d14);
+        distanceInC1 += dTool.distanceBetween(d11, centroid1);
+        distanceInC1 += dTool.distanceBetween(d12, centroid1);
+        distanceInC1 += dTool.distanceBetween(d13, centroid1);
+        distanceInC1 += dTool.distanceBetween(d14, centroid1);
         List<Double> pointsC2 = new ArrayList<>();
         double d21 = 0.0;
         double d22 = -1.0;
@@ -40,12 +38,10 @@ public class ClustersScoringTest {
         pointsC2.add(d24);
         double centroid2 = (d21+d22+d23+d24)/4.0;
         double distanceInC2 = 0.0;
-        distanceInC2 += dTool.distanceBetween(d21, d22);
-        distanceInC2 += dTool.distanceBetween(d21, d23);
-        distanceInC2 += dTool.distanceBetween(d21, d24);
-        distanceInC2 += dTool.distanceBetween(d22, d23);
-        distanceInC2 += dTool.distanceBetween(d22, d24);
-        distanceInC2 += dTool.distanceBetween(d23, d24);
+        distanceInC2 += dTool.distanceBetween(d21, centroid2);
+        distanceInC2 += dTool.distanceBetween(d22, centroid2);
+        distanceInC2 += dTool.distanceBetween(d23, centroid2);
+        distanceInC2 += dTool.distanceBetween(d24, centroid2);
         List<Double> pointsC3 = new ArrayList<>();
         double d31 = 24.0;
         double d32 = 22.45;
@@ -57,13 +53,11 @@ public class ClustersScoringTest {
         pointsC3.add(d34);
         double centroid3 = (d31+d32+d33+d34)/4.0;
         double distanceInC3 = 0.0;
-        distanceInC3 += dTool.distanceBetween(d31, d32);
-        distanceInC3 += dTool.distanceBetween(d31, d33);
-        distanceInC3 += dTool.distanceBetween(d31, d34);
-        distanceInC3 += dTool.distanceBetween(d32, d33);
-        distanceInC3 += dTool.distanceBetween(d32, d34);
-        distanceInC3 += dTool.distanceBetween(d33, d34);
-        
+        distanceInC3 += dTool.distanceBetween(d31, centroid3);
+        distanceInC3 += dTool.distanceBetween(d32, centroid3);
+        distanceInC3 += dTool.distanceBetween(d33, centroid3);
+        distanceInC3 += dTool.distanceBetween(d34, centroid3);
+
         List<Cluster<Double>> clusters = new ArrayList<>();
         Cluster<Double> c1 = new Cluster<>(1, pointsC1, dTool);
         Cluster<Double> c2 = new Cluster<>(1, pointsC2, dTool);
@@ -79,7 +73,7 @@ public class ClustersScoringTest {
         score += 1.0/distanceInC1;
         score += 1.0/distanceInC2;
         score += 1.0/distanceInC3;
-        
+
         ClustersScoring<Double> cScoring = new ClustersScoring<>(clusters, dTool);
         double calculatedScore = cScoring.getBasicScore();
         assertTrue(dTool.areTheSame(calculatedScore, score));

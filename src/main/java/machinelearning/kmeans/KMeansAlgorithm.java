@@ -1,11 +1,14 @@
 package machinelearning.kmeans;
 
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class KMeansAlgorithm<T> {
 
+    final static Logger logger = Logger.getLogger(KMeansAlgorithm.class);
     private List<Cluster<T>> clusters = null;
     private int k;
     private List<T> data = null;
@@ -39,7 +42,7 @@ public class KMeansAlgorithm<T> {
         double score = 0.0;
         for(int i=0; i<n; i++){
             this.run();
-            double clustersScore = this.getClustersScore("basic"); 
+            double clustersScore = this.getClustersScore("basic");
             if(clustersScore > score){
                 bestClusters = this.getClusters();
                 score = clustersScore;
@@ -81,7 +84,9 @@ public class KMeansAlgorithm<T> {
             j++;
             hasChanged = false;
             List<T> previousCentroids = this.getCentroids();
-            System.out.println(previousCentroids.stream().map(T::toString).collect(Collectors.joining(", ")));
+            if(logger.isDebugEnabled()){
+                logger.debug("Previous centroids : " + previousCentroids.stream().map(T::toString).collect(Collectors.joining(", ")));
+            }
             this.clusters.stream().forEach(Cluster<T>::clearPoints);
             for(int i=0; i<this.data.size(); i++){
                 setToClosestCluster(this.data.get(i));
@@ -89,7 +94,9 @@ public class KMeansAlgorithm<T> {
             for(Cluster<T> cluster : this.clusters){
                 if(!cluster.assignCentroid()){
                     cluster.setCentroid(getRandomData());
-                    System.out.println("randomization");
+                    if(logger.isDebugEnabled()){
+                        logger.debug("randomization");
+                    }
                 }
             }
             this.clusters.stream().forEach(Cluster<T>::assignCentroid);
@@ -118,9 +125,9 @@ public class KMeansAlgorithm<T> {
     }
 
     public double getClustersScore(String scoring){
-        ClustersScoring<T> scoringTool = new ClustersScoring<T>(this.clusters, this.genericTool);
+        ClustersScoring<T> scoringTool = new ClustersScoring<>(this.clusters, this.genericTool);
         if("basic".equals(scoring)){
-            return scoringTool.getBasicScore(); 
+            return scoringTool.getBasicScore();
         }
         return 0.0;
     }

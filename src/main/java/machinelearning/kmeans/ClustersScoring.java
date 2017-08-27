@@ -32,12 +32,10 @@ public class ClustersScoring<T>{
         double score = 0.0;
         int clustersSize = clusters.size();
         for(int i=0; i<clustersSize; i++){
-            for(int j=0; j<clustersSize-1; j++){
-                int indexSecondCentroid = (i+j+1)%(clustersSize);
-                score += this.genericTool.distanceBetween(clusters.get(i).getCentroid(),clusters.get(indexSecondCentroid).getCentroid());
+            Cluster<T> cluster = clusters.get(i);
+            for(int j=i+1; j<clustersSize; j++){
+                score += this.genericTool.distanceBetween(cluster.getCentroid(),clusters.get(j).getCentroid());
             }
-        }
-        for(Cluster<T> cluster : clusters){
             double distanceInCluster = 0.0;
             for(T point : cluster.getPoints()){
                 distanceInCluster += genericTool.distanceBetween(point,cluster.getCentroid());
