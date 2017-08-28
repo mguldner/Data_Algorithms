@@ -125,6 +125,18 @@ public class RunExample {
         
         List<Frame> fareFrames = getDoubleFrames(allPassengers.stream().map(Passenger::getFare).collect(Collectors.toList()), kFare);
         
+        if(logger.isDebugEnabled()){
+            logger.debug("Age Frames : ");
+            for(Frame f : ageFrames){
+                System.out.println(f.toString());
+            }
+            
+            logger.debug("\n\n\nFare Frames : ");
+            for(Frame f : fareFrames){
+                System.out.println(f.toString());
+            }
+        }
+        
         allPassengers.stream().forEach(passenger -> {
             try {
                 setAgeFrame(passenger, ageFrames);
