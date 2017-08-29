@@ -13,10 +13,36 @@ public class ClustersScoring<T>{
     }
 
     public double getSilhouetteScore(){
+        double score = 0.0;
+        double numberOfPoints = 0.0;
         for(Cluster<T> cluster : this.clusters){
-            
+            for(T point : cluster.getPoints()){
+                score += computeSilhouetteForPoint(point, cluster, getNearestCluster(cluster));
+                numberOfPoints++;
+            }
         }
-        return 0.0;
+        return score / numberOfPoints;
+    }
+    
+    private Cluster<T> getNearestCluster(Cluster<T> cluster) throws AlgorithmException{
+        if(this.clusters.size()==1){
+            throw new AlgorithmException("Try to get silhouette but only one cluster");
+            return null;
+        }
+        Cluster<T> nearest = null;
+        T centroid = cluster.getCentroid();
+        double minDist = Double.MAX_VALUE;
+        for(Cluster<T> tmpCluster : this.clusters){
+            if(!cluster.equals(tmpCluster)){
+                T tmpCentroid = tmpCluster.getCentroid();
+                double tmpDist = this.genericTool.distanceBetween(centroid, tmpCentroid);
+                if(tmpDist < minDist){
+                    nearest = tmpCluster;
+                    minDist = tmpDist;
+                }
+            }
+        }
+        return nearest;
     }
     
     private double computeSilhouetteForPoint(T point, Cluster<T> associatedCluster, Cluster<T> nearestCluster){
