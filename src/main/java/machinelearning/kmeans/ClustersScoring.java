@@ -14,18 +14,24 @@ public class ClustersScoring<T>{
 
     public double getSilhouetteScore(){
         for(Cluster<T> cluster : this.clusters){
-            double a = 0.0;
-            double b= 0.0;
-            for(T point : cluster.getPoints()){
-                for(T otherPoint : cluster.getPoints()){
-                    if(!otherPoint.equals(point))
-                        a += genericTool.distanceBetween(point, otherPoint);
-                }
-
-                //a += genericTool.distanceBetween(po);
-            }
+            
         }
         return 0.0;
+    }
+    
+    private double computeSilhouetteForPoint(T point, Cluster<T> associatedCluster, Cluster<T> nearestCluster){
+        double a = computeSilhouettePartClusterForPoint(point, associatedCluster, true);
+        double b = computeSilhouettePartClusterForPoint(point, nearestCluster, false);
+        double silhouette = (b - a)/(Math.max(a,b));
+    }
+    
+    private double computeSilhouettePartClusterForPoint(T point, Cluster<T> cluster,boolean sameCluster){
+        double value = 0.0;
+        for(T otherPoint : cluster.getPoints()){
+            if(!sameCluster || !otherPoint.equals(point))
+                value += genericTool.distanceBetween(point, otherPoint);
+        }
+        return value /= ((double)cluster.getSize());
     }
 
     public double getBasicScore(){
