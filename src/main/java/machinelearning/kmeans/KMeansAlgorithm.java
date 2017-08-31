@@ -1,5 +1,6 @@
 package machinelearning.kmeans;
 
+import machinelearning.general.exception.AlgorithmException;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -37,12 +38,12 @@ public class KMeansAlgorithm<T> {
         return this.clusters.stream().map(Cluster<T>::getCentroid).collect(Collectors.toList());
     }
 
-    public void runMultipleTime(int n){
+    public void runMultipleTime(int n, String scoringMethod){
         List<Cluster<T>> bestClusters = new ArrayList<>();
         double score = 0.0;
         for(int i=0; i<n; i++){
             this.run();
-            double clustersScore = this.getClustersScore("basic");
+            double clustersScore = this.getClustersScore(scoringMethod);
             if(clustersScore > score){
                 bestClusters = this.getClusters();
                 score = clustersScore;
@@ -128,6 +129,14 @@ public class KMeansAlgorithm<T> {
         ClustersScoring<T> scoringTool = new ClustersScoring<>(this.clusters, this.genericTool);
         if("basic".equals(scoring)){
             return scoringTool.getBasicScore();
+        }
+        if("silhouette".equals(scoring)){
+            try {
+                return scoringTool.getSilhouetteScore();
+            } catch (AlgorithmException e){
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+            }
         }
         return 0.0;
     }

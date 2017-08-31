@@ -98,7 +98,7 @@ public class RunExample {
         }
     }
     
-    private int determineBestK(String attribute, int min, int max){
+    private int determineBestK(String attribute, int min, int max, String scoringMethod) {
         List<Double> data = null;
         if("age".equals(attribute)){
             data = allPassengers.stream().filter(p -> !p.isAgeFrameSet()).map(Passenger::getAge).collect(Collectors.toList());
@@ -109,8 +109,9 @@ public class RunExample {
         double bestScore = 0.0;
         for(int k=min; k<=max; k++){
             KMeansAlgorithm<Double> doubleKMeansAlgorithm = new KMeansAlgorithm<>(data, k, new DoubleTool());
-            doubleKMeansAlgorithm.runMultipleTime(10);
-            double score = doubleKMeansAlgorithm.getClustersScore("basic");
+            doubleKMeansAlgorithm.runMultipleTime(10, scoringMethod);
+            double score = doubleKMeansAlgorithm.getClustersScore(scoringMethod);
+            System.out.println("Pour " + attribute + " avec k = " + k + ", score de " + score + " >? " + bestScore);
             if(score > bestScore){
                 bestScore = score;
                 bestK = k;
@@ -119,19 +120,19 @@ public class RunExample {
         return bestK;
     }
     
-    private void runPredictionAlgorithm(double trustProbability, int kAge, int kFare) throws IOException, AlgorithmException {
-        List<Frame> ageFrames = getDoubleFrames(allPassengers.stream().filter(p -> !p.isAgeFrameSet()).map(Passenger::getAge).collect(Collectors.toList()), kAge);
+    private void runPredictionAlgorithm(double trustProbability, int kAge, int kFare, String clusterScoringMethod) throws IOException, AlgorithmException {
+        List<Frame> ageFrames = getDoubleFrames(allPassengers.stream().filter(p -> !p.isAgeFrameSet()).map(Passenger::getAge).collect(Collectors.toList()), kAge, clusterScoringMethod);
         ageFrames.add(new Frame(-1, -1));
         
-        List<Frame> fareFrames = getDoubleFrames(allPassengers.stream().map(Passenger::getFare).collect(Collectors.toList()), kFare);
+        List<Frame> fareFrames = getDoubleFrames(allPassengers.stream().map(Passenger::getFare).collect(Collectors.toList()), kFare, clusterScoringMethod);
         
-        if(logger.isDebugEnabled()){
-            logger.debug("Age Frames : ");
+        if(logger.isInfoEnabled()){
+            logger.info("Age Frames : " + ageFrames.size());
             for(Frame f : ageFrames){
                 System.out.println(f.toString());
             }
             
-            logger.debug("\n\n\nFare Frames : ");
+            logger.info("\n\n\nFare Frames : " + fareFrames.size());
             for(Frame f : fareFrames){
                 System.out.println(f.toString());
             }
@@ -161,7 +162,7 @@ public class RunExample {
         for(Passenger p : testSet){
             p.setAnswerValue(algorithm.test(trainedTree, p));
             if(logger.isInfoEnabled()){
-                logger.info(p.getPassengerId()+","+(p.getAnswerValue()?1:0));
+                System.out.println(p.getPassengerId()+","+(p.getAnswerValue()?1:0));
             }
         }
     }
@@ -196,9 +197,9 @@ public class RunExample {
         }
     }
     
-    private List<Frame> getDoubleFrames(List<Double> data, int k) throws AlgorithmException{
+    private List<Frame> getDoubleFrames(List<Double> data, int k, String clusterScoringMethod) throws AlgorithmException{
         KMeansAlgorithm<Double> doubleKMeansAlgorithm = new KMeansAlgorithm<>(data, k, new DoubleTool());
-        doubleKMeansAlgorithm.runMultipleTime(10);
+        doubleKMeansAlgorithm.runMultipleTime(10, clusterScoringMethod);
         if(logger.isDebugEnabled()){
             logger.debug("K-Means has run");
         }
@@ -206,26 +207,28 @@ public class RunExample {
         List<Frame> frames = new ArrayList<>();
         for (Cluster<Double> cluster : doubleKMeansAlgorithm.getClusters())
         {
-            List<Double> clusterPoints = cluster.getPoints();
-            Frame frame = new Frame(Collections.min(clusterPoints), Collections.max(clusterPoints));
-            if(frames.isEmpty())
-                frames.add(frame);
-            else{
-                boolean frameInserted = false;
-                for(int i=0; i<frames.size(); i++) {
-                    if(!frameInserted && frames.get(i).getMin() >= frame.getMax()){
-                        frames.add(i, frame);
+            if(cluster.getSize() != 0) {
+                List<Double> clusterPoints = cluster.getPoints();
+                Frame frame = new Frame(Collections.min(clusterPoints), Collections.max(clusterPoints));
+                if (frames.isEmpty())
+                    frames.add(frame);
+                else {
+                    boolean frameInserted = false;
+                    for (int i = 0; i < frames.size(); i++) {
+                        if (!frameInserted && frames.get(i).getMin() >= frame.getMax()) {
+                            frames.add(i, frame);
+                            frameInserted = true;
+                        }
+                    }
+                    if (!frameInserted && frame.getMin() >= frames.get(frames.size() - 1).getMax()) {
+                        frames.add(frame);
                         frameInserted = true;
                     }
-                }
-                if(!frameInserted && frame.getMin() >= frames.get(frames.size()-1).getMax()){
-                    frames.add(frame);
-                    frameInserted = true;
-                }
-                if(!frameInserted){
-                    logger.error("Actual frames : \n" + frames.stream().map(f -> f.toString()).collect(Collectors.joining("\n")));
-                    logger.error("New frame : " + frame.toString());
-                    throw new AlgorithmException("[RunExample] The frames done by the Double-K-Means algorithm are not right : they share same elements");
+                    if (!frameInserted) {
+                        logger.error("Actual frames : \n" + frames.stream().map(f -> f.toString()).collect(Collectors.joining("\n")));
+                        logger.error("New frame : " + frame.toString());
+                        throw new AlgorithmException("[RunExample] The frames done by the Double-K-Means algorithm are not right : they share same elements");
+                    }
                 }
             }
         }
@@ -258,11 +261,13 @@ public class RunExample {
 
     public static void main(String[] args) throws AlgorithmException {
         RunExample runExample = new RunExample();
+        String clusterScoringMethod = "basic";
         try{
             runExample.initData();
-            int kAge = runExample.determineBestK("age", 2, 20);
-            int kFare= runExample.determineBestK("fare", 2, 25);
-            runExample.runPredictionAlgorithm(0.95, kAge, kFare);
+            int kAge = runExample.determineBestK("age", 2, 50, "basic");
+            int kFare= runExample.determineBestK("fare", 2, 50, clusterScoringMethod);
+            System.out.println("");
+            runExample.runPredictionAlgorithm(0.95, kAge, kFare, clusterScoringMethod);
             runExample.evaluateSolution();
         } catch (Exception e) {
             e.printStackTrace();

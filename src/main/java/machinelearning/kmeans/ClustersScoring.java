@@ -1,9 +1,14 @@
 package machinelearning.kmeans;
 
+import machinelearning.general.Algorithm;
+import machinelearning.general.exception.AlgorithmException;
+import org.apache.log4j.Logger;
+
 import java.util.List;
 
 public class ClustersScoring<T>{
 
+    private final static Logger logger = Logger.getLogger(ClustersScoring.class);
     List<Cluster<T>> clusters = null;
     GenericTool<T> genericTool = null;
 
@@ -12,13 +17,19 @@ public class ClustersScoring<T>{
         this.genericTool = genericTool;
     }
 
-    public double getSilhouetteScore(){
+    public double getSilhouetteScore() throws AlgorithmException{
         double score = 0.0;
         double numberOfPoints = 0.0;
         for(Cluster<T> cluster : this.clusters){
             for(T point : cluster.getPoints()){
-                score += computeSilhouetteForPoint(point, cluster, getNearestCluster(cluster));
-                numberOfPoints++;
+                try {
+                    score += computeSilhouetteForPoint(point, cluster, getNearestCluster(cluster));
+                    numberOfPoints++;
+                } catch (AlgorithmException e){
+                    if(logger.isDebugEnabled()){
+                        logger.debug(e.getMessage());
+                    }
+                }
             }
         }
         return score / numberOfPoints;
@@ -27,7 +38,6 @@ public class ClustersScoring<T>{
     private Cluster<T> getNearestCluster(Cluster<T> cluster) throws AlgorithmException{
         if(this.clusters.size()==1){
             throw new AlgorithmException("Try to get silhouette but only one cluster");
-            return null;
         }
         Cluster<T> nearest = null;
         T centroid = cluster.getCentroid();
@@ -45,19 +55,23 @@ public class ClustersScoring<T>{
         return nearest;
     }
     
-    private double computeSilhouetteForPoint(T point, Cluster<T> associatedCluster, Cluster<T> nearestCluster){
+    private double computeSilhouetteForPoint(T point, Cluster<T> associatedCluster, Cluster<T> nearestCluster) throws AlgorithmException{
         double a = computeSilhouettePartClusterForPoint(point, associatedCluster, true);
         double b = computeSilhouettePartClusterForPoint(point, nearestCluster, false);
-        double silhouette = (b - a)/(Math.max(a,b));
+        return (b - a)/(Math.max(a,b));
     }
     
-    private double computeSilhouettePartClusterForPoint(T point, Cluster<T> cluster,boolean sameCluster){
+    private double computeSilhouettePartClusterForPoint(T point, Cluster<T> cluster, boolean sameCluster) throws AlgorithmException{
         double value = 0.0;
-        for(T otherPoint : cluster.getPoints()){
-            if(!sameCluster || !otherPoint.equals(point))
-                value += genericTool.distanceBetween(point, otherPoint);
+        if((sameCluster && cluster.getSize() == 1) || (!sameCluster && cluster.getSize() == 0))
+            throw new AlgorithmException("Doing cluster with only one point");
+        else {
+            for (T otherPoint : cluster.getPoints()) {
+                if (!sameCluster || !otherPoint.equals(point))
+                    value += genericTool.distanceBetween(point, otherPoint);
+            }
+            return value /= ((double) cluster.getSize());
         }
-        return value /= ((double)cluster.getSize());
     }
 
     public double getBasicScore(){

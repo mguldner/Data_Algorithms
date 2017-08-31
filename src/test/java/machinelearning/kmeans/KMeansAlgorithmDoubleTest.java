@@ -12,6 +12,7 @@ public class KMeansAlgorithmDoubleTest {
 
     @Test
     public void testApply() {
+        String scoringMethod = "basic";
         List<Double> dataTest = new ArrayList<Double>();
         dataTest.add(0.15);
         dataTest.add(1.23);
@@ -26,7 +27,7 @@ public class KMeansAlgorithmDoubleTest {
         dataTest.add(44.6);
         dataTest.add(25.3);
         KMeansAlgorithm<Double> doubleKMAlgorithm = new KMeansAlgorithm<Double>(dataTest, 3, new DoubleTool());
-        doubleKMAlgorithm.runMultipleTime(10);;
+        doubleKMAlgorithm.runMultipleTime(10, scoringMethod);
         List<Cluster<Double>> clusters = doubleKMAlgorithm.getClusters();
         System.out.println("Resultats : \n\n\n");
         for (Cluster<Double> cluster : clusters) {
