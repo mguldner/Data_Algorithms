@@ -1,7 +1,7 @@
 # Algorithms
 List of self-coded algorithms for further use. 
 
-For the Machine Learning algorithms, I used the free book "A Course in Machine Learning" of Hal Daumé III. 
+For the Machine Learning Decision Tree algorithm, I used the free book "A Course in Machine Learning" of Hal Daumé III. 
 See website http://ciml.info/ and Github https://github.com/hal3 of the author of the book.
 
 ## Graph Theory
