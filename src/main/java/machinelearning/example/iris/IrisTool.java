@@ -26,6 +26,7 @@ public class IrisTool implements GenericTool<Iris> {
             double globalPetalLength = 0.0;
             double globalPetalWidth = 0.0;
             Map<String, Integer> globalSpecies = new HashMap<>();
+            double numberOfPoints = (double)points.size();
             for (Iris iris : points) {
                 globalSepalLength += (Double) iris.getValueForFeature("sepalLength");
                 globalSepalWidth += (Double) iris.getValueForFeature("sepalWidth");
@@ -34,10 +35,10 @@ public class IrisTool implements GenericTool<Iris> {
                 String species = (String) iris.getValueForFeature("species");
                 globalSpecies.put(species, globalSpecies.containsKey(species) ? globalSpecies.get(species) + 1 : 1);
             }
-            return new Iris(globalSepalLength,
-                    globalSepalWidth,
-                    globalPetalLength,
-                    globalPetalWidth,
+            return new Iris(globalSepalLength/numberOfPoints,
+                    globalSepalWidth/numberOfPoints,
+                    globalPetalLength/numberOfPoints,
+                    globalPetalWidth/numberOfPoints,
                     Collections.max(globalSpecies.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getKey());
         }
     }

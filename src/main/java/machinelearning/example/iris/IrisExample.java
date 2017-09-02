@@ -95,7 +95,9 @@ public class IrisExample {
         IrisExample irisExample = new IrisExample();
         irisExample.initData();
         String scoringMethod = "silhouette";
-        List<Iris> centroids =  irisExample.determineBestK(4, 4, scoringMethod);
+        List<Iris> centroids =  irisExample.determineBestK(3, 3, scoringMethod);
+        for(Iris iris : centroids)
+            System.out.println(iris.toString());
         double evaluation = irisExample.runPredicitonAndEvaluate(centroids);
         System.out.println("[" + scoringMethod +"] Pourcentage de bonnes réponses : " + evaluation);
     }

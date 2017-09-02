@@ -53,4 +53,9 @@ public class Iris implements DataObject<String> {
     public void setAnswerValue(String value) {
         this.speciesPrediction = value;
     }
+
+    @Override
+    public String toString() {
+        return this.sepalLength + ", " + this.sepalWidth + ", " + this.petalLength + ", " + this.petalWidth + ", " + this.species;
+    }
 }
