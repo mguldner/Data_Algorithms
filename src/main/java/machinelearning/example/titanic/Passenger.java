@@ -93,7 +93,7 @@ public class Passenger implements DataObject<Boolean>{
         case "embarked":
             return embarked;
         default:
-            System.err.println("[ERROR:Passenger2] No value for feature " + feature);
+            System.err.println("[ERROR:Passenger] No value for feature " + feature);
             return null;
         }
     }

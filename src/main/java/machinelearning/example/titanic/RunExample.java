@@ -261,10 +261,10 @@ public class RunExample {
 
     public static void main(String[] args) throws AlgorithmException {
         RunExample runExample = new RunExample();
-        String clusterScoringMethod = "basic";
+        String clusterScoringMethod = "silhouette";
         try{
             runExample.initData();
-            int kAge = runExample.determineBestK("age", 2, 50, "basic");
+            int kAge = runExample.determineBestK("age", 2, 50, clusterScoringMethod);
             int kFare= runExample.determineBestK("fare", 2, 50, clusterScoringMethod);
             System.out.println("");
             runExample.runPredictionAlgorithm(0.95, kAge, kFare, clusterScoringMethod);

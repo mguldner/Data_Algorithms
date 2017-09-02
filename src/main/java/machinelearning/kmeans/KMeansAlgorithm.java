@@ -52,7 +52,7 @@ public class KMeansAlgorithm<T> {
         this.clusters = bestClusters;
     }
 
-    public void run(){
+    private void run(){
         initWithRandom();
         compute();
     }
@@ -71,14 +71,14 @@ public class KMeansAlgorithm<T> {
         }
     }
 
-    public void initWithRandom(){
+    private void initWithRandom(){
         this.clusters = new ArrayList<>();
         for(int i=0; i<k; i++){
             this.clusters.add(new Cluster<T>(i, getRandomData(), this.genericTool));
         }
     }
 
-    public void compute(){
+    private void compute(){
         boolean hasChanged = true;
         int j=0;
         while(hasChanged && j < 20){
@@ -88,7 +88,7 @@ public class KMeansAlgorithm<T> {
             if(logger.isDebugEnabled()){
                 logger.debug("Previous centroids : " + previousCentroids.stream().map(T::toString).collect(Collectors.joining(", ")));
             }
-            this.clusters.stream().forEach(Cluster<T>::clearPoints);
+            this.clusters.forEach(Cluster<T>::clearPoints);
             for(int i=0; i<this.data.size(); i++){
                 setToClosestCluster(this.data.get(i));
             }
@@ -100,7 +100,6 @@ public class KMeansAlgorithm<T> {
                     }
                 }
             }
-            this.clusters.stream().forEach(Cluster<T>::assignCentroid);
             for(int i=0; i<previousCentroids.size() && !hasChanged; i++){
                 if(!this.genericTool.areTheSame(previousCentroids.get(i), this.getCentroids().get(i)))
                     hasChanged = true;
@@ -108,7 +107,7 @@ public class KMeansAlgorithm<T> {
         }
     }
 
-    public void setToClosestCluster(T dataPoint){
+    private void setToClosestCluster(T dataPoint){
         double minDistance = Double.MAX_VALUE;
         int closest = -1;
         for(int i=0; i<this.clusters.size(); i++){
@@ -121,7 +120,7 @@ public class KMeansAlgorithm<T> {
         this.clusters.get(closest).addPoint(dataPoint);
     }
 
-    public T getRandomData(){
+    private T getRandomData(){
         return this.data.get((int)(Math.random() * (this.data.size()-1)));
     }
 
