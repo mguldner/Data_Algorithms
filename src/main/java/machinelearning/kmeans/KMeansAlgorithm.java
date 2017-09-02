@@ -129,6 +129,9 @@ public class KMeansAlgorithm<T> {
         if("basic".equals(scoring)){
             return scoringTool.getBasicScore();
         }
+        if("basicVariance".equals(scoring)){
+            return scoringTool.getBasicVarianceScore();
+        }
         if("silhouette".equals(scoring)){
             try {
                 return scoringTool.getSilhouetteScore();

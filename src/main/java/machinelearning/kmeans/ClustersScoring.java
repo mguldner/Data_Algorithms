@@ -4,6 +4,7 @@ import machinelearning.general.Algorithm;
 import machinelearning.general.exception.AlgorithmException;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClustersScoring<T>{
@@ -11,10 +12,20 @@ public class ClustersScoring<T>{
     private final static Logger logger = Logger.getLogger(ClustersScoring.class);
     List<Cluster<T>> clusters = null;
     GenericTool<T> genericTool = null;
+    int numberOfPoints;
+    T generalMean;
 
     public ClustersScoring(List<Cluster<T>> clusters, GenericTool<T> genericTool){
         this.clusters = clusters;
         this.genericTool = genericTool;
+        List<T> allPoints = new ArrayList<>();
+        int nbPoints = 0;
+        for(Cluster<T> cluster : clusters){
+            allPoints.addAll(cluster.getPoints());
+            nbPoints += cluster.getSize();
+        }
+        this.numberOfPoints = nbPoints;
+        this.generalMean = this.genericTool.calculateMean(allPoints);
     }
 
     public double getSilhouetteScore() throws AlgorithmException{
@@ -89,5 +100,35 @@ public class ClustersScoring<T>{
             score += 1.0/distanceInCluster;
         }
         return score;
+    }
+
+    public double getBasicVarianceScore(){
+        return (getVarianceInter()/(double)(this.clusters.size()-1))/(getVarianceIntra()/(double)(this.numberOfPoints - this.clusters.size()));
+    }
+
+    private double getVariance(Cluster<T> cluster){
+        T mean = this.genericTool.calculateMean(cluster.getPoints());
+        double sum = 0.0;
+        for(T point : cluster.getPoints()){
+            sum += Math.pow(this.genericTool.distanceBetween(point, mean), 2);
+        }
+        return sum / (double)cluster.getSize();
+    }
+
+    private double getVarianceIntra(){
+        double sum = 0.0;
+        for(Cluster cluster : this.clusters){
+            sum += ((double)cluster.getSize() / (double)this.numberOfPoints) * this.getVariance(cluster);
+        }
+        return sum;
+    }
+
+    private double getVarianceInter(){
+        double sum = 0.0;
+        for(Cluster<T> cluster : this.clusters){
+            T clusterMean = this.genericTool.calculateMean(cluster.getPoints());
+            sum += ((double)cluster.getSize() / (double)this.numberOfPoints) * Math.pow(this.genericTool.distanceBetween(clusterMean, this.generalMean), 2);
+        }
+        return sum;
     }
 }
