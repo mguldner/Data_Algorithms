@@ -30,6 +30,7 @@ For now, only one example hic, I think, will further be used to test the differe
 ### Example
 
 * Titanic -> according to the previous data, will a person live or die.
+* Iris dataset -> to test the clustering algorithms
 
 ### Loss Functions
 
