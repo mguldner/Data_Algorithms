@@ -20,11 +20,12 @@ For now, only one example hic, I think, will further be used to test the differe
 
 * [In progress]
 
-    * K-Means
+    * 
 
 #### Working Algorithm
 
 * Decision Tree
+* K-Means
 
 ### Example
 
@@ -36,7 +37,3 @@ For now, the only use case I used is Titanic : a Binary Classification.
 Therefore, I implemented the loss functions : 
  * Hinge Loss
  * Logistic Loss
-
-### TODO
-
-* Add test class for Scoring
